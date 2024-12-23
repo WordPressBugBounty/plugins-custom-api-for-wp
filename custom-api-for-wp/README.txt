@@ -3,8 +3,8 @@ Contributors: cyberlord92
 Tags: custom-endpoints, api, rest api, external api, custom api, rest, rest route, wp rest api, crud, webhooks, wp automate, rest endpoints
 Requires at least: 3.0.1
 Requires PHP: 5.4
-Tested up to: 6.6
-Stable tag: 4.0.0
+Tested up to: 6.7
+Stable tag: 4.1.0
 License: MIT/Expat
 License URI: https://docs.miniorange.com/mit-license
 
@@ -13,23 +13,14 @@ Connect WordPress with External APIs and create no-code custom WordPress REST AP
 
 == Description ==
 
-[Connect to external APIs | Create Custom API in WP](https://plugins.miniorange.com/custom-api-for-wordpress) plugin formerly known as **Custom API for WP plugin** which helps you to _create no code custom REST endpoints/ Custom APIs_ into WordPress directly with an interactive **Graphical User Interface (GUI)** to fetch any type of data from any WordPress database tables like **users, posts, custom tables or any 3rd-party plugin's table**. You can also use HTTP request methods like **GET, POST, PUT, DELETE (Insert, Update, Delete)** data with these created Custom endpoint / Custom REST routes.
+[**Custom API for WP plugin**](https://plugins.miniorange.com/custom-api-for-wordpress) plugin allows you to _create no code custom REST endpoints / Custom APIs_ in WordPress. With interactive **Graphical User Interface (GUI)** fetch any data from WordPress database tables like **users, posts, custom tables or any 3rd-party plugin's table**. You can also use HTTP request methods like **POST, PUT, DELETE (Insert, Update, Delete)** data with these created Custom endpoint / Custom REST routes.
 
-This plugin also helps you **connect to your external APIs** and platforms to **fetch the data and display via shortcode or template** as per your design (custom HTML, CSS and JS), post data on third-party platforms on any WordPress events (user creation, Woocommerce events, form submission, membership purchase etc) via WordPress hooks. 
+You can also **connect any external APIs** and platforms to **fetch the data and display data on WordPress frontend** . You can use your design (custom HTML, CSS and JS), post data on third-party platforms on any WordPress events (user creation, Woocommerce events, form submission, membership purchase etc) via WordPress hooks. 
 
-This plugin has an interactive and simple UI that will allow you to interact with data by creating Custom REST API endpoints. It means you can easily interact with the WordPress database to perform **CRUD operations on data using the custom endpoints created (generated) using [Connect to external APIs | Custom endpoints for WP](https://plugins.miniorange.com/custom-api-for-wordpress)**.
+You can easily interact with the WordPress database to perform **CRUD operations on data using the custom endpoints created (generated) using [Connect to external APIs | Custom endpoints for WP](https://plugins.miniorange.com/custom-api-for-wordpress)**.
 
-[Connect to external APIs | Custom endpoints for WP](https://plugins.miniorange.com/custom-api-for-wordpress) takes care of writing the **complex SQL queries** to fetch/update data and provides you with a very simple User Interface to create or generate custom REST endpoints.
+[Custom API for WP plugin](https://plugins.miniorange.com/custom-api-for-wordpress) takes care of writing the **complex SQL queries** to fetch/update data and provide you with a very simple User Interface to create or generate custom REST endpoints.
 This plugin also provides the **filter operations in which you can filter the data** you want to show in the API endpoint response.
-
-[Connect to external APIs | Custom endpoints for WP](https://plugins.miniorange.com/custom-api-for-wordpress) also adds a **layer of security by providing authentication methods**  to these custom-generated API endpoints. The authentication methods which are compatible with the plugin are: 
-== ==
-* [API Key Authentication](https://developers.miniorange.com/docs/rest-api-authentication/wordpress/api-key-authentication) 
-* [JWT Authentication](https://developers.miniorange.com/docs/rest-api-authentication/wordpress/jwt-authentication)
-* [Basic Authentication](https://developers.miniorange.com/docs/rest-api-authentication/wordpress/basic-authentication) 
-* [OAuth 2.0 Authentication](https://developers.miniorange.com/docs/rest-api-authentication/wordpress/oauth-authentication)
-
-You will also be able to **control the visibility** and customize the metadata attached to the Custom endpoint response. This plugin also **eliminates the risk of unauthorized access** to these custom endpoints that you created as it only gives access after successful user validation.
 
 
 == Third-party/External API Integration into WordPress ==
@@ -84,35 +75,9 @@ You will also be able to **control the visibility** and customize the metadata a
   5. Import products from **Parts Canada** to WooCommerce
   6. Import products from **Barron** to WooCommerce 
 
-## Google Merchant Center
-
-* Sync Products between **WordPress and [Google Merchant Center feed](https://www.google.com/retail/solutions/merchant-center/)** (Integrate WordPress/ WooCommerce Store with Google Merchant Center)
- 
-* If you have a WordPress/ WooCommerce store or third-party dropshipping plugins like [Alidropship](https://alidropship.com/plugin/) and want to sync the products between the WordPress site and [Google Merchant Center feed](https://www.google.com/retail/solutions/merchant-center/) feed via APIs then it can be achieved using our solution. 
-* _Following are key features_ - 
-
- 1. **Real-time data sync** between the WordPress and Google Merchant Centre platforms.
- 2. **CSV or TXT files import and export are not required**. Everything will be handled automatically via REST APIs.
- 3. Any attribute like Image, pricing, variations, quantity, stock status, and description can be **updated easily**.
- 4. Solution can be made **compatible with WordPress as WooCommerce store, [Alidropship](https://alidropship.com/plugin/) store** or any third-party plugin which manages the products in WordPress.
-
-## Connect multiple WordPress/Woocommerce sites
-
-* WooCommerce API Product Sync with Multiple WooCommerce Stores.
-* We do provide the solution in which the product data stored in one WooCommerce store can also be synced with other [WooCommerce](https://wordpress.org/plugins/woocommerce/) stores using the REST APIs such that the WC stores will be updated on a real-time basis.
-* Sync all the Woocommerce data between multiple stores on updating in any one store in real-time.
-
 ## Zoho Integration with WordPress
 
 * If you have a WordPress site and want to connect it to your [Zoho](https://www.zoho.com/) applications like [Zoho CRM](https://www.zoho.com/in/crm/), [Zoho connect](https://www.zoho.com/connect/), [Zoho Subscription](https://www.zoho.com/in/subscriptions/), [Zoho Inventory](https://www.zoho.com/in/inventory/) etc to perform operations like sync real-time data between these platforms, which involves user profile sync, operate on WordPress or assign membership to the user based on his Zoho subscription etc. With this integration, any Zoho APIs and webhooks can be integrated to perform real-time sync. 
-
-## Sync Advance Custom Fields (ACF) Posts in WordPress using external API data
-
-* This plugin helps to connect external and third-party APIs to sync the data from external platforms into WordPress Posts and ACF fields.
-
-## Google Sheet Integration
-
-* If you have a WordPress/Woocommerce site and want to connect it to Google Sheets, then our plugin can help you achieve that with our Google Sheets integrator. It provides both ways to sync the data. So, if you update or create any row in the google sheet, then that data will be synced in WordPress and similarly, if you perform any operation or event in WordPress, then that data can be synced as per your need in the Google sheet on a real-time basis.
 
 ## WordPress Automate using Webhooks 
 
@@ -121,63 +86,30 @@ For example - If you have a WordPress/Woocommerce site and want to sync the user
 
 These solutions can be used additionally along with the plugin. To know more details, contact us at _apisupport@xecurify.com_ and let us know your requirements. 
 
-### Free Version Features
+== Premium Plans ==
 
-* _**Unlimited Custom REST** APIs (endpoints) can be created for the HTTP GET method._
-* _Name Custom Endpoints/Custom REST routes as per our wish and need._
-* _**Build custom REST routes for all tables** within WordPress._
-* _Build custom REST routes for fetching posts and taxonomies._
-* _**Fetch any type of data** available in WordPress via custom REST API endpoints._
-* _**Full control of Custom REST API responses** without writing a single line of PHP code._
-* _Fetch operation available with single WHERE condition._
-* _Integrate with **all types of applications**._
-* _Create one API connection based on **simple and advanced SQL queries** on the WordPress database._
-* _Create one external API connection for all the standard third-party REST API endpoints to fetch/update between WordPress and 3rd party platforms._
+### Basic API Creation Plan
 
+* Create Unlimited Simple Custom APIs using GUI
+* Apply filters on the data
+* Customizable API Response Format
+* Role-Based Restriction on Custom APIs
 
-### Premium Version Features
+### Advanced API Creation Plan
 
-* _Create/ Register custom namespaces and routes._
-* _Multiple endpoints allowed per REST route._
-* _**Create (generate) Custom API routes for posts** and taxonomy creation, modification, and deletion._
-* _Supports **all kinds of HTTP Methods** (GET, PUT, POST, DELETE)._
-* _**Filters** included to alter and extend default functionality ._
-* _Fetch operation available with **multiple custom conditions**._
-* _Limit the number of responses you get as a result of Custom Endpoints (API)._
-* _Pass the data in application/JSON or application/x-www-formurlencode for HTTP POST and PUT API endpoints._
-* _**Complex queries** formation with an Advance mechanism._
-* _**Restrict public access** to all Custom REST API Routes with API KEY Authentication method (default) and some other Authentication methods can also be provided as ADD-ON as per requirement like_
-  1. REST API endpoints authentication using **OAuth 2.0**
-  2. REST API endpoints authentication using **JWT Tokens**
-  3. **Basic Authorization** with Username and Password
-  4. Authentication from **external OAuth/OIDC provider's token** for REST API endpoints 
-* _Create unlimited API endpoints with custom **SQL-based query** on an easy-to-use GUI without any code._
-* _Create one API connection based on **simple and advanced SQL queries** on the WordPress database._
-* _Create one external API connection for all the standard third-party REST API endpoints to fetch/update between WordPress and 3rd party platforms._
+* Basic API Creation plan features +
+* Create Unlimited Advanced Custom APIs using SQL
+* Filter API Response with Dynamic Parameters
+* Add Filters and Conditional Logic
 
 
-###Enterprise Version Features
+### Connect External API Plan
 
-* _**All** Premium Version Features._
-* _Create (generate) unlimited Custom API endpoints with **custom SQL Query** to create a custom API with your complex SQL query._
-* _**Connect with External REST API/ External Endpoints**, also known as third-party REST API endpoints._
-* _**External API integration to fetch data in the WordPress**, update data on the External API provider side._
-* _**Supports all kinds of HTTP(GET/POST/PUT/UPDATE) Methods.**_
-* _Supports **integration with Custom API / Custom Endpoints** of External Website or Platform._
-* _**Dynamic WordPress hooks** for each External API / Endpoint connection to perform operations on external data._
-* _**Compatibility with Third-Party Plugin Events** like WooCommerce, WPForms, [Gravityforms](https://www.gravityforms.com/), Membership Plugins, etc._
-* _**Support for calling External / Custom Endpoints** on third-party plugin events._
-* _**Compatibility with third-party plugin’s payment gateways** provided by WooCommerce, Wpforms, PayPal, Stripe or any custom payment gateway._
-* _**Support for connection with Custom API / Custom Endpoints** developed in any framework like Java, PHP, NodeJS, .NET, etc._
-* _**Support of Dynamic headers** for the External REST APIs / Custom APIs request_ 
-* _**Securely access External Endpoints** by passing the required authentication parameter either in the Header or Body._
-* _**Display data fetched from external API using shortcode** as per your styling (custom HTML, CSS and JS).
-* Both JSON and XML response formats are supported.
-* Supports OAuth 2.0 authentication, Basic Authentication, API Key authentication and Bearer token/JWT token API endpoint authentication for External API Integration feature.
-* Supports execution of multiple APIs at once which are interdependent.
+* Connect to Unlimited External APIs
+* Supports JSON, XML, SOAP Based APIs
+* OAuth2, Bearer, API Key Based Authentication for External APIs
+* Data Display using Shortcode and Template Tag
 
-
-Authentication-related information can be sent by any suitable REST client for eg-  You can use CURL calls to send HTTP Requests or even any IDE like PHPSTORM or you can go with POSTMAN to send an authentication key.
 
 
 ####Type of APIs supported
@@ -335,6 +267,9 @@ Yes, the plugin’s Connect to External API feature can be used to connect the Z
 * Major UI Updates
 * Introduced new easy to use features
 * WordPress 6.6 compatibility
+
+= 4.1.0 =
+* WordPress 6.7 compatibility
 
 == Upgrade Notice ==
 
