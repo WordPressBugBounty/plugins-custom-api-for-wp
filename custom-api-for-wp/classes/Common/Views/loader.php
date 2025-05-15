@@ -10,8 +10,8 @@
 
 namespace MO_CAW\Common\Views;
 
-use MO_CAW\Common\Utils;
 use MO_CAW\Common\Constants;
+use MO_CAW\Common\Utils;
 
 add_action( Constants::ADMIN_MENU_HOOK, __NAMESPACE__ . '\\admin_menu' );
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\plugin_settings_style' );
@@ -49,7 +49,7 @@ function admin_head_functionalities() {
 function admin_menu() {
 	$slug = 'custom_api_wp_settings';
 	add_menu_page(
-		'MO API Settings ' . __( 'Configure Custom API Settings', 'custom_api_wp_settings' ),
+		'MO API Settings ' . __( 'Configure Custom API Settings', 'custom-api-for-wp' ),
 		'Custom API plugin', // The string is case sensitive.
 		'administrator',
 		$slug,
