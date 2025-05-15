@@ -3,10 +3,10 @@ Contributors: cyberlord92
 Tags: custom-endpoints, api, rest api, external api, custom api, rest, rest route, wp rest api, crud, webhooks, wp automate, rest endpoints
 Requires at least: 3.0.1
 Requires PHP: 5.4
-Tested up to: 6.7
-Stable tag: 4.1.0
+Tested up to: 6.8
+Stable tag: 4.2.0
 License: MIT/Expat
-License URI: https://docs.miniorange.com/mit-license
+License URI: https://plugins.miniorange.com/mit-license
 
 Connect WordPress with External APIs and create no-code custom WordPress REST API endpoints to interact with the WordPress database to perform SQL operations.
 
@@ -270,6 +270,10 @@ Yes, the plugin’s Connect to External API feature can be used to connect the Z
 
 = 4.1.0 =
 * WordPress 6.7 compatibility
+
+= 4.2.0 =
+* WordPress 6.8 compatibility
+* UI improvements
 
 == Upgrade Notice ==
 
