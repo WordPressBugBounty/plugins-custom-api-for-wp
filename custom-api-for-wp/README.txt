@@ -4,7 +4,7 @@ Tags: custom-endpoints, api, rest api, external api, custom api, rest, rest rout
 Requires at least: 3.0.1
 Requires PHP: 5.4
 Tested up to: 6.8
-Stable tag: 4.2.1
+Stable tag: 4.2.2
 License: Expat
 License URI: https://plugins.miniorange.com/mit-license
 
@@ -49,8 +49,8 @@ This plugin also provides the **filter operations in which you can filter the da
 * **[Integrate External/third-party REST API endpoints with third-party plugin's payment gateways](https://plugins.miniorange.com/integrate-external-third-party-rest-api-endpoints-into-wordpress)** like that of [WooCommerce](https://woocommerce.com/), [Wpforms](https://wpforms.com/)or any other custom gateway such that the API can be called automatically based on the payment status.
 * **Integrate External/ third-party REST API endpoints with custom/ third-party plugins' forms** like that of [Wpforms](https://wpforms.com/), Elementor, [Gravityforms](https://www.gravityforms.com/) etc such that the external APIs can be called on these forms submission or any related events to perform fetch/update/delete operation based on API endpoints.
 * **Sync third-party/external API provider's (Supplier's) API Inventory data into [WooCommerce](https://woocommerce.com/)** and display them in the product feed on a real-time basis. [[More detials]](https://plugins.miniorange.com/woocommerce-api-product-sync-with-woocommerce-rest-apis)
-* **Integrate external APIs into WooCommerce** - If you have a Woocommerce store and want to update the data like order creation, order status, and user profile update on a third-party platform in real-time, then a solution can be provided using our plugin.
-* **Data display using shortcode** - Fetch data from external API with security and display that on WordPress front-end pages using the shortcodes with customized design.
+* **Integrate external APIs into WooCommerce** – If you have a Woocommerce store and want to update the data like order creation, order status, and user profile update on a third-party platform in real-time, then a solution can be provided using our plugin.
+* **Data display using shortcode** – Fetch data from external API with security and display that on WordPress front-end pages using the shortcodes with customized design.
 
 
 
@@ -58,7 +58,7 @@ This plugin also provides the **filter operations in which you can filter the da
 
 ## WooCommerce Products sync via External API | Import products in WooCommerce using Supplier APIs
 * If you have a [WooCommerce](https://woocommerce.com/) store and want to **sync** (add/update/delete) the products from the external inventory warehouse/  store's platform via APIs then it can be using the CUSTOM API plugin along with our **[Woocommerce products sync from external APIs](https://plugins.miniorange.com/woocommerce-api-product-sync-with-woocommerce-rest-apis)**.
-*  _Following are the key features_ - 
+*  _Following are the key features_ – 
 
   1. **Data can be synced automatically** after a certain specified period. (For example, every 4 hours a day).
   2. All the product details like SKU, name, description, price, stock status, images, custom attributes and variant productions can be updated along with other custom attributes as well.
@@ -66,7 +66,7 @@ This plugin also provides the **filter operations in which you can filter the da
   4. **Data syncing can also be done by clicking on the sync button manually** in the User Interface.
   5. **[WooCommerce](https://wordpress.org/plugins/woocommerce/) product images can also be added** or updated with ease based on external API data.
   6. **No extra work to import and export CSV/ TXT files manually**. API Integration will do the job automatically.
-* This plugin supports complete integrations for the following -
+* This plugin supports complete integrations for the following –
 
   1. Sync **Amrod** catalogue to WooCommerce 
   2. Sync **S&S Activewear** products to WooCommerce
@@ -82,7 +82,7 @@ This plugin also provides the **filter operations in which you can filter the da
 ## WordPress Automate using Webhooks 
 
 * This plugin can be made compatible to automate WordPress events with external API and webhook to synchronize data between WordPress and external applications. 
-For example - If you have a WordPress/Woocommerce site and want to sync the user data, product data, posts, and membership data with external platforms, inventories and CRM like Zoho, Hubspot etc., then this plugin can be extended with an add-on to achieve this.
+For example – If you have a WordPress/Woocommerce site and want to sync the user data, product data, posts, and membership data with external platforms, inventories and CRM like Zoho, Hubspot etc., then this plugin can be extended with an add-on to achieve this.
 
 These solutions can be used additionally along with the plugin. To know more details, contact us at _apisupport@xecurify.com_ and let us know your requirements. 
 
@@ -146,6 +146,14 @@ These solutions can be used additionally along with the plugin. To know more det
 3. Choose data that you want to retrieve with API and conditions to retrieve data
 4. Save the configuration and your API will be ready to use.
 
+== External Service ==
+
+This plugin may call login.xecurify.com (our own service) in case user wants to register or share any queries or feedback with us and this is completely optional.
+
+== Privacy Policy ==
+
+This plugin does not store any user data, and all the data remains on the user's end only. 
+
 == Frequently Asked Questions ==
 
 = Can I fetch data from an external API endpoint and display it on my WordPress pages? =
@@ -199,7 +207,7 @@ Yes, the plugin’s Connect to External API feature can be used to connect the Z
 * Added compatibility with WordPress v5.6
 
 = 1.1.9 =
-* Bugfix - Added support for LIKE condition
+* Bugfix – Added support for LIKE condition
 
 = 2.1.0 =
 * Bug Fixes, Compatibility with WordPress v5.7 and integration with external APIs
@@ -277,6 +285,9 @@ Yes, the plugin’s Connect to External API feature can be used to connect the Z
 
 = 4.2.1 =
 * Bug fixes
+
+= 4.2.2 =
+* Documentation updates
 
 == Upgrade Notice ==
 
