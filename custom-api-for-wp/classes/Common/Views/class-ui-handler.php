@@ -137,34 +137,36 @@ class UI_Handler {
 		} elseif ( Constants::EXTERNAL_ENDPOINT === $type ) {
 			$nonce = 'mo_caw_external_api_enable_disable_api';
 		}
+		if ( Utils::mo_caw_require_capability() ) {
+			if ( isset( $_POST['nonce'] ) && check_ajax_referer( $nonce, 'nonce' ) ) {
 
-		if ( isset( $_POST['nonce'] ) && check_ajax_referer( $nonce, 'nonce' ) ) {
-			$api_name   = isset( $_POST['api-name'] ) ? sanitize_text_field( wp_unslash( $_POST['api-name'] ) ) : '';
-			$method     = isset( $_POST['method'] ) ? sanitize_text_field( wp_unslash( $_POST['method'] ) ) : '';
-			$namespace  = isset( $_POST['namespace'] ) ? sanitize_text_field( wp_unslash( $_POST['namespace'] ) ) : '';
-			$is_enabled = isset( $_POST['is-enabled'] ) ? sanitize_text_field( wp_unslash( $_POST['is-enabled'] ) ) : true;
-			$is_enabled = 'false' === $is_enabled ? false : true;
-			if ( ! empty( $api_name ) ) {
-				$table_configuration = array(
-					'type'            => $type,
-					'connection_name' => $api_name,
-					'method'          => $method,
-					'namespace'       => $namespace,
-					'is_enabled'      => $is_enabled,
-				);
+				$api_name   = isset( $_POST['api-name'] ) ? sanitize_text_field( wp_unslash( $_POST['api-name'] ) ) : '';
+				$method     = isset( $_POST['method'] ) ? sanitize_text_field( wp_unslash( $_POST['method'] ) ) : '';
+				$namespace  = isset( $_POST['namespace'] ) ? sanitize_text_field( wp_unslash( $_POST['namespace'] ) ) : '';
+				$is_enabled = isset( $_POST['is-enabled'] ) ? sanitize_text_field( wp_unslash( $_POST['is-enabled'] ) ) : true;
+				$is_enabled = 'false' === $is_enabled ? false : true;
+				if ( ! empty( $api_name ) ) {
+					$table_configuration = array(
+						'type'            => $type,
+						'connection_name' => $api_name,
+						'method'          => $method,
+						'namespace'       => $namespace,
+						'is_enabled'      => $is_enabled,
+					);
 
-				$response = DB_Utils::update_enable_of_endpoint( $table_configuration );
+					$response = DB_Utils::update_enable_of_endpoint( $table_configuration );
 
-				if ( $response ) {
-					wp_send_json_success( 'API ' . ( $is_enabled ? 'enabled' : 'disabled' ) . ' successfully', 200 );
+					if ( $response ) {
+						wp_send_json_success( 'API ' . ( $is_enabled ? 'enabled' : 'disabled' ) . ' successfully', 200 );
+					} else {
+						wp_send_json_error( 'An error occurred ' . ( $is_enabled ? 'enabling' : 'disabling' ) . ' the API', 400 );
+					}
 				} else {
-					wp_send_json_error( 'An error occurred ' . ( $is_enabled ? 'enabling' : 'disabling' ) . ' the API', 400 );
+					wp_send_json_error( 'Invalid API name', 400 );
 				}
 			} else {
-				wp_send_json_error( 'Invalid API name', 400 );
+				wp_send_json_error( 'Invalid nonce', 400 );
 			}
-		} else {
-			wp_send_json_error( 'Invalid nonce', 400 );
 		}
 	}
 

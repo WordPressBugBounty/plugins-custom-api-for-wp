@@ -12,6 +12,7 @@ namespace MO_CAW\Common\Settings;
 
 use MO_CAW\Common\DB_Utils;
 use MO_CAW\Common\Constants;
+use MO_CAW\Common\Utils;
 
 /**
  * This class deals with saving common Custom GUI API settings in database.
@@ -38,14 +39,16 @@ class API_Creation {
 	 * @return void
 	 */
 	private function form_action_identifier() {
-		if ( isset( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) ), 'MO_CAW_API_Creation' ) ) {
-			$this->save_settings( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) ), 'MO_CAW_API_Creation_Delete' ) ) {
-			$this->delete_settings( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) ), 'MO_CAW_API_Creation_Export' ) ) {
-			$this->export_settings( $_POST );
+		if ( Utils::mo_caw_require_capability() ) {
+			if ( isset( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) ), 'MO_CAW_API_Creation' ) ) {
+				$this->save_settings( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) ), 'MO_CAW_API_Creation_Delete' ) ) {
+				$this->delete_settings( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_API_Creation_Nonce'] ) ), 'MO_CAW_API_Creation_Export' ) ) {
+				$this->export_settings( $_POST );
+			}
+			// The else condition is not required here as WordPress handles failure in nonce verification itself.
 		}
-		// The else condition is not required here as WordPress handles failure in nonce verification itself.
 	}
 
 	/**
@@ -93,9 +96,7 @@ class API_Creation {
 			$filter_details['column']    = $value_specific_filter_column[0];
 			$filter_details['condition'] = $value_specific_filter_condition[0];
 
-			if ( Constants::HTTP_GET === $this->gui_endpoint_config['method'] ) {
-				$filter_details['parameter'] = 1;
-			} elseif ( Constants::HTTP_PUT === $this->gui_endpoint_config['method'] ) {
+			if ( Constants::HTTP_POST !== $this->gui_endpoint_config['method'] ) {				
 				$filter_details['parameter'] = $value_specific_filter_parameter[0];
 			}
 
@@ -113,7 +114,16 @@ class API_Creation {
 
 		if ( empty( $configuration['request_columns'] ) ) {
 			$this->save_in_session( Constants::NO_REQUEST_COLUMN_SELECTED );
-		} elseif ( isset( $_SESSION['MO_CAW_API_Creation_Form_Data'] ) ) {
+		}
+		if ( count( $value_specific_filter_parameter ) !== count( array_unique( $value_specific_filter_parameter ) ) ) {
+			$this->save_in_session( Constants::DUPLICATE_PARAMETER_NAME );
+		}
+		foreach ( $value_specific_filter_parameter as $param ) {
+			if ( is_numeric( $param ) ) {
+				$this->save_in_session( Constants::NO_NUMERIC_PARAMETER_NAME );
+			}
+		}
+		if ( isset( $_SESSION['MO_CAW_API_Creation_Form_Data'] ) ) {
 			unset( $_SESSION['MO_CAW_API_Creation_Form_Data'] );
 			session_destroy();
 		}
@@ -190,9 +200,20 @@ class API_Creation {
 		DB_Utils::update_option( 'mo_caw_message_status', Constants::MESSAGE_STATUS_WARNING );
 
 		$_SESSION['MO_CAW_API_Creation_Form_Data'] = $this->gui_endpoint_config;
-
+		$row_filter = array(
+			'connection_name' => $this->gui_endpoint_config['connection_name'],
+			'type'            => Constants::GUI_ENDPOINT,
+			'method'          => $this->gui_endpoint_config['method'],
+			'namespace'       => $this->gui_endpoint_config['namespace'],
+		);
 		$referer = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
-		wp_safe_redirect( $referer );
-		exit();
+		if ( DB_Utils::get_configuration( $row_filter ) ) {
+			wp_safe_redirect( 'admin.php?page=custom_api_wp_settings&tab=custom-api&action=edit&api-name=' . $this->gui_endpoint_config['connection_name'] . '&method=' . $this->gui_endpoint_config['method'] . '&namespace=' . $this->gui_endpoint_config['namespace'] . '&_wpnonce=' . wp_create_nonce( 'MO_CAW_API_Creation_Edit_Nonce' ), 302 );
+			unset( $_SESSION['MO_CAW_API_Creation_Form_Data'] );
+			exit();
+		} else {
+			wp_safe_redirect( $referer );
+			exit();
+		}
 	}
 }

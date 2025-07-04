@@ -563,12 +563,17 @@ class API_Creation {
 													</div>
 													<div class="mb-3 col mo-caw-form-content d-none" request-methods="get">
 														<div class="d-flex justify-content-between align-items-center">
-															<input type="text" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode pt-1 px-2" id="mo-caw-custom-api-specific-filter-parameter-get-<?php echo esc_attr( $index++ ); ?>" name="mo-caw-custom-api-specific-filter-parameter-get[]" aria-label="#mo-caw-custom-api-specific-filter-parameter-get" value="<?php echo isset( $filter_details['parameter'] ) ? esc_attr( 'Position - ' . $filter_details['parameter'] ) : ( 'Position - ' . esc_attr( $index++ ) ); ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Indicates the position of parameter in the API request" placeholder="Parameter position in request URL" aria-readonly="true" readonly>
+															<input type="text" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode pt-1 px-2" id="mo-caw-custom-api-specific-filter-parameter-get-<?php echo esc_attr( $index++ ); ?>" name="mo-caw-custom-api-specific-filter-parameter-get[]" aria-label="#mo-caw-custom-api-specific-filter-parameter-get" value="<?php echo isset( $filter_details['parameter'] ) ? esc_attr( $filter_details['parameter'] ) : ( 'Position_' . esc_attr( $index++ ) ); ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Indicates the position of parameter in the API request" placeholder="Parameter position in request URL" aria-readonly="true" readonly>
 														</div>
 													</div>
 													<div class="mb-3 col mo-caw-form-content d-none" request-methods="put">
 														<div class="d-flex justify-content-between align-items-center">
 															<input type="text" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode pt-1 px-2" id="mo-caw-custom-api-specific-filter-parameter-put-<?php echo esc_attr( $index++ ); ?>" name="mo-caw-custom-api-specific-filter-parameter-put[]" aria-label="#mo-caw-custom-api-specific-filter-parameter-put" value="<?php echo isset( $filter_details['parameter'] ) ? esc_attr( $filter_details['parameter'] ) : ( 'column_param' . esc_attr( $index++ ) ); ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Indicates the name of parameter in the API request" placeholder="Parameter name in request URL">
+														</div>
+													</div>
+													<div class="mb-3 col mo-caw-form-content d-none" request-methods="delete">
+														<div class="d-flex justify-content-between align-items-center">
+															<input type="text" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode pt-1 px-2" id="mo-caw-custom-api-specific-filter-parameter-delete-<?php echo esc_attr( $index++ ); ?>" name="mo-caw-custom-api-specific-filter-parameter-delete[]" aria-label="#mo-caw-custom-api-specific-filter-parameter-delete" value="<?php echo isset( $filter_details['parameter'] ) ? esc_attr( $filter_details['parameter'] ) : ( 'column_param' . esc_attr( $index++ ) ); ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Indicates the name of parameter in the API request" placeholder="Parameter name in request URL">
 														</div>
 													</div>
 												</div>
@@ -602,12 +607,17 @@ class API_Creation {
 												</div>
 												<div class="mb-3 col mo-caw-form-content d-none" request-methods="get">
 													<div class="d-flex justify-content-between align-items-center">
-														<input type="text" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode pt-1 px-2" id="mo-caw-custom-api-specific-filter-parameter-get-0" name="mo-caw-custom-api-specific-filter-parameter-get[]" aria-label="#mo-caw-custom-api-specific-filter-parameter-get-0" value="<?php echo 'Position - 1'; ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Indicates the position of parameter in the API request" placeholder="Parameter position in request URL" aria-readonly="true" readonly>
+														<input type="text" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode pt-1 px-2" id="mo-caw-custom-api-specific-filter-parameter-get-0" name="mo-caw-custom-api-specific-filter-parameter-get[]" aria-label="#mo-caw-custom-api-specific-filter-parameter-get-0" value="<?php echo 'Position_1'; ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Indicates the position of parameter in the API request" placeholder="Parameter position in request URL" aria-readonly="true" readonly>
 													</div>
 												</div>
 												<div class="mb-3 col mo-caw-form-content d-none" request-methods="put">
 													<div class="d-flex justify-content-between align-items-center">
 														<input type="text" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode pt-1 px-2" id="mo-caw-custom-api-specific-filter-parameter-put-0" name="mo-caw-custom-api-specific-filter-parameter-put[]" aria-label="#mo-caw-custom-api-specific-filter-parameter-put-0" value="<?php echo 'column_param1'; ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Indicates the name of parameter in the API request" placeholder="Parameter name in request URL">
+													</div>
+												</div>
+												<div class="mb-3 col mo-caw-form-content d-none" request-methods="delete">
+													<div class="d-flex justify-content-between align-items-center">
+														<input type="text" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode pt-1 px-2" id="mo-caw-custom-api-specific-filter-parameter-delete-0" name="mo-caw-custom-api-specific-filter-parameter-delete[]" aria-label="#mo-caw-custom-api-specific-filter-parameter-delete-0" value="<?php echo 'column_param1'; ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Indicates the name of parameter in the API request" placeholder="Parameter name in request URL">
 													</div>
 												</div>
 											</div>
@@ -664,7 +674,7 @@ class API_Creation {
 				$filter_details  = $this->value_specific_filter['filter_details'];
 				$ordered_columns = array();
 				foreach ( $filter_details as $filter_detail ) {
-					$ordered_columns[ $filter_detail['parameter'] ] = $filter_detail['column'];
+					$ordered_columns[ $filter_detail['parameter'] ] = $filter_detail['parameter'];
 				}
 				ksort( $ordered_columns );
 				foreach ( $ordered_columns as $column_name ) {
@@ -676,7 +686,7 @@ class API_Creation {
 				$filter_details = $this->value_specific_filter['filter_details'];
 				$request_params = array();
 				foreach ( $filter_details as $filter_detail ) {
-					$request_params[ $filter_detail['column'] ] = '<' . $filter_detail['column'] . '>';
+					$request_params[ $filter_detail['parameter'] ] = '<' . $filter_detail['parameter'] . '>';
 				}
 				$route = add_query_arg( $request_params, $route );
 			}

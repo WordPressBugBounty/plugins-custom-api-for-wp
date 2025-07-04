@@ -198,28 +198,32 @@ class SQL_API_Creation {
 	 * @return string
 	 */
 	protected function replace_dynamic_values( $sql_query, $dynamic_values, $error_response ) {
-		$pattern = '/{{[A-Za-z0-9-_]+}}/';
-
-		preg_match_all( $pattern, $sql_query, $reg_array );
-		$dynamic_keys = array_unique( $reg_array[0] );
-		$size         = count( $dynamic_values );
-		if ( ( count( $dynamic_keys ) === $size ) ) {
-			for ( $i = 0; $i < $size; $i++ ) {
-				$mo_regex = ltrim( $dynamic_keys[ $i ], '{{' );
-				$mo_regex = rtrim( $mo_regex, '}}' );
-
-				if ( isset( $dynamic_values[ $mo_regex ] ) && null !== $dynamic_values[ $mo_regex ] ) {
-					$dynamic_value = is_int( $dynamic_values[ $mo_regex ] ) ? $dynamic_values[ $mo_regex ] : (string) $dynamic_values[ $mo_regex ];
-					$sql_query     = str_replace( $dynamic_keys[ $i ], $dynamic_value, $sql_query );
-				} else {
-					wp_send_json( $error_response, 400 );
-				}
+		global $wpdb;
+		if ( empty( $dynamic_values ) || ! is_array( $dynamic_values ) ) {
+			return $sql_query;
+		}
+		$pattern = '/{{([A-Za-z0-9-_]+)}}/';
+		preg_match_all( $pattern, $sql_query, $matches );
+		$params                = array();
+		$expected_placeholders = 0;
+		foreach ( $matches[1] as $param_name ) {
+			++$expected_placeholders;
+			if ( isset( $dynamic_values[ $param_name ] ) ) {
+				$params[]  = $dynamic_values[ $param_name ];
+				$sql_query = str_replace( '{{' . $param_name . '}}', '%s', $sql_query ); // Use placeholder.
+			} else {
+				wp_send_json( $error_response, 400 );
 			}
-		} else {
+		}
+		$actual_placeholders = substr_count( $sql_query, '%s' );
+		if ( count( $params ) !== $actual_placeholders || $expected_placeholders !== $actual_placeholders ) {
 			wp_send_json( $error_response, 400 );
 		}
 
-		return $sql_query;
+		// Use wpdb->prepare to safely insert values.
+		$prepared_query = $wpdb->prepare( $sql_query, ...$params );
+
+		return $prepared_query;
 	}
 
 	/**
@@ -237,9 +241,9 @@ class SQL_API_Creation {
 
 		if ( ! empty( $sql_query ) ) {
 			if ( \strtoupper( Constants::HTTP_GET ) === $method ) {
-				$result['data'] = $wpdb->get_results( $sql_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery -- SQL queries are taken from the administrator and are required for this feature to work, and there is nonce verification, as well as administrator, check while accepting the queries from the user.
+				$result['data'] = $wpdb->get_results( $sql_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery -- SQL queries are already prepared and sanitized in the parent function, and there is nonce verification, as well as administrator, check while accepting the queries from the user.
 			} else {
-				$result['data'] = $wpdb->query( $sql_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery -- SQL queries are taken from the administrator and are required for this feature to work, and there is nonce verification, as well as administrator, check while accepting the queries from the user.
+				$result['data'] = $wpdb->query( $sql_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery -- SQL queries are already prepared and sanitized in the parent function, and there is nonce verification, as well as administrator, check while accepting the queries from the user.
 			}
 		}
 

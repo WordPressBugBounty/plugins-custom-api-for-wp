@@ -12,6 +12,7 @@ namespace MO_CAW\Common\Settings;
 
 use MO_CAW\Common\DB_Utils;
 use MO_CAW\Common\Constants;
+use MO_CAW\Common\Utils;
 
 /**
  * This class deals with saving common External API settings in database.
@@ -36,12 +37,14 @@ class External_API_Connection {
 	 * @return void
 	 */
 	private function form_action_identifier() {
-		if ( isset( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) ), 'MO_CAW_External_API_Connection' ) ) {
-			$this->save_settings( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) ), 'MO_CAW_External_API_Connection_Delete' ) ) {
-			$this->delete_settings( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) ), 'MO_CAW_External_API_Connection_Export' ) ) {
-			$this->export_settings( $_POST );
+		if ( Utils::mo_caw_require_capability() ) {
+			if ( isset( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) ), 'MO_CAW_External_API_Connection' ) ) {
+				$this->save_settings( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) ), 'MO_CAW_External_API_Connection_Delete' ) ) {
+				$this->delete_settings( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_External_API_Connection_Nonce'] ) ), 'MO_CAW_External_API_Connection_Export' ) ) {
+				$this->export_settings( $_POST );
+			}
 		}
 		// The else condition is not required here as WordPress handles failure in nonce verification itself.
 	}

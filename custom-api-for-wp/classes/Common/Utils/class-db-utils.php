@@ -8,7 +8,10 @@
  * @link       https://miniorange.com
  */
 
+
 namespace MO_CAW\Common;
+
+use MO_CAW\Common\Utils;
 
 /**
  * This Class deals with common functions required by complete plugin.
@@ -185,27 +188,46 @@ class DB_Utils {
 
 		// Creating query condition.
 		unset( $row_filter['type'] );
-		$query_condition = " WHERE  `type` = '" . esc_sql( $configuration_type ) . "'";
+		// Build WHERE clause with prepared statements.
+		$where_clauses = array( 'type = %s' );
+		$where_values  = array( $configuration_type );
+
 		foreach ( $row_filter as $column_name => $column_value ) {
-			$query_condition = $query_condition . ' AND `' . esc_sql( $column_name ) . "` = '" . esc_sql( $column_value ) . "'";
+			$where_clauses[] = '`' . esc_sql( $column_name ) . '` = %s';
+			$where_values[]  = $column_value;
 		}
+		$query_condition = ' WHERE ' . implode( ' AND ', $where_clauses );
 
 		// Setting columns to return.
 		if ( ! empty( $column_filter ) ) {
-			$column_names = '`' . esc_sql( $column_filter[0] ) . '`';
-
-			array_shift( $column_filter );
+			$column_names = array();
 			foreach ( $column_filter as $column_name ) {
-				$column_names .= ', `' . esc_sql( $column_name ) . '`';
+				$column_names[] = '`' . esc_sql( $column_name ) . '`';
 			}
+			$column_names = implode( ', ', $column_names );
 		} else {
 			$column_names = '*';
 		}
 
+		// Prepare and execute query based on configuration type.
 		if ( Constants::EXTERNAL_ENDPOINT === $configuration_type ) {
-			$rows = $wpdb->get_results( 'SELECT ' . $column_names . ' FROM `' . esc_sql( $wpdb->prefix ) . 'mo_external_api_config`' . $query_condition ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$table = $wpdb->prefix . 'mo_external_api_config';
+			$query = self::build_prepared_select_query(
+				$table,
+				$column_names,
+				$query_condition,
+				$where_values
+			);
+			$rows  = $wpdb->get_results( $query );
 		} elseif ( Constants::GUI_ENDPOINT === $configuration_type || Constants::SQL_ENDPOINT === $configuration_type ) {
-			$rows = $wpdb->get_results( 'SELECT ' . $column_names . ' FROM `' . esc_sql( $wpdb->prefix ) . 'mo_custom_endpoint_config`' . $query_condition ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$table = $wpdb->prefix . 'mo_custom_endpoint_config';
+			$query = self::build_prepared_select_query(
+				$table,
+				$column_names,
+				$query_condition,
+				$where_values
+			);
+			$rows  = $wpdb->get_results( $query );
 		}
 
 		if ( ! empty( $rows ) ) {
@@ -274,13 +296,23 @@ class DB_Utils {
 		global $wpdb;
 
 		$configuration_type = $table_configuration['type'];
+		$column_names       = '`namespace`';
+		$query_condition    = ''; // No WHERE clause.
+		$where_values       = array();
 
 		if ( Constants::EXTERNAL_ENDPOINT === $configuration_type ) {
-			$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT `namespace` FROM `%1smo_external_endpoint_config`', $wpdb->prefix ) ); // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
+			$table = $wpdb->prefix . 'mo_external_endpoint_config';
 		} elseif ( Constants::GUI_ENDPOINT === $configuration_type || Constants::SQL_ENDPOINT === $configuration_type ) {
-			$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT `namespace` FROM `%1smo_custom_endpoint_config`', $wpdb->prefix ) ); // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
-
+			$table = $wpdb->prefix . 'mo_custom_endpoint_config';
 		}
+		$query = self::build_prepared_select_query(
+			$table,
+			$column_names,
+			$query_condition,
+			$where_values
+		);
+		$rows  = $wpdb->get_results( $query );
+
 		return $rows;
 	}
 
@@ -296,6 +328,36 @@ class DB_Utils {
 		$column_names = $wpdb->get_col( $wpdb->prepare( 'DESCRIBE %1s', $table_name ), 0 ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Quotes not required here as it's a table name.
 		return $column_names;
 	}
+	/**
+	 * Build a prepared SELECT SQL query for a given table with specified columns, conditions, and parameters.
+	 *
+	 * @param string $table           The name of the database table (unprefixed). Will be sanitized internally.
+	 * @param string $column_names    Comma-separated list of column names to select (e.g., '*' or '`id`, `name`').
+	 * @param string $query_condition SQL WHERE clause string (e.g., ' WHERE id = %d AND status = %s').
+	 * @param array  $where_values    Array of values to bind to the placeholders in the WHERE clause.
+	 *
+	 * @return string The prepared SQL query string ready to be executed.
+	 */
+	public static function build_prepared_select_query( $table, $column_names, $query_condition, $where_values ) {
+		global $wpdb;
+
+		// Ensure the table name and column names are properly escaped.
+		$sanitized_table           = esc_sql( $table );
+		$sanitized_columns         = $column_names;
+		$sanitized_query_condition = $query_condition;
+
+		// Build the SQL query string with sanitized identifiers.
+		$sql = "SELECT {$sanitized_columns} FROM `{$sanitized_table}`{$sanitized_query_condition}";
+
+		// Prepare only the values, not identifiers.
+		if ( ! empty( $where_values ) ) {
+			// Unpack $where_values as individual arguments for $wpdb->prepare().
+			return call_user_func_array( array( $wpdb, 'prepare' ), array_merge( array( $sql ), $where_values ) );
+		} else {
+			return $sql;
+		}
+	}
+
 
 	/**
 	 * AJAX callback function to get all column names for a table.
@@ -303,16 +365,18 @@ class DB_Utils {
 	 * @return void
 	 */
 	public static function get_table_columns() {
-		if ( isset( $_GET['nonce'] ) && check_ajax_referer( 'mo_caw_get_columns_nonce', 'nonce' ) ) {
-			if ( isset( $_GET['table'] ) ) {
-				$table_name   = sanitize_text_field( wp_unslash( $_GET['table'] ) );
-				$column_names = self::get_all_column_names( $table_name );
-				wp_send_json_success( $column_names, 200 );
+		if ( Utils::mo_caw_require_capability() ) {
+			if ( isset( $_GET['nonce'] ) && check_ajax_referer( 'mo_caw_get_columns_nonce', 'nonce' ) ) {
+				if ( isset( $_GET['table'] ) ) {
+					$table_name   = sanitize_text_field( wp_unslash( $_GET['table'] ) );
+					$column_names = self::get_all_column_names( $table_name );
+					wp_send_json_success( $column_names, 200 );
+				} else {
+					wp_send_json_error( 'Invalid table name', 400 );
+				}
 			} else {
-				wp_send_json_error( 'Invalid table name', 400 );
+				wp_send_json_error( 'Invalid nonce', 400 );
 			}
-		} else {
-			wp_send_json_error( 'Invalid nonce', 400 );
 		}
 	}
 }

@@ -241,7 +241,7 @@ class Feedback {
 					modal.style.display = 'none';
 				}
 
-				jQuery('a[aria-label="Deactivate Connect to external APIs | Create Custom API in WP"]').click(function() {
+				jQuery('a[aria-label="Deactivate Custom API for WP"]').click(function() {
 					moCawShowModal();
 					return false;
 				});

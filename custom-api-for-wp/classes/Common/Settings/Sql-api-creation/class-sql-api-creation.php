@@ -12,6 +12,7 @@ namespace MO_CAW\Common\Settings;
 
 use MO_CAW\Common\Constants;
 use MO_CAW\Common\DB_Utils;
+use MO_CAW\Common\Utils;
 
 /**
  * This class deals with saving common Custom SQL API settings in database.
@@ -38,17 +39,17 @@ class SQL_API_Creation {
 	 * @return void
 	 */
 	private function form_action_identifier() {
-
-		if ( isset( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) ), 'MO_CAW_SQL_API_Creation' ) ) {
-			$this->save_settings( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) ), 'MO_CAW_SQL_API_Creation_Delete' ) ) {
-			$this->delete_settings( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) ), 'MO_CAW_SQL_API_Creation_Export' ) ) {
-			$this->export_settings( $_POST );
+		if ( Utils::mo_caw_require_capability() ) {
+			if ( isset( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) ), 'MO_CAW_SQL_API_Creation' ) ) {
+				$this->save_settings( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) ), 'MO_CAW_SQL_API_Creation_Delete' ) ) {
+				$this->delete_settings( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_SQL_API_Creation_Nonce'] ) ), 'MO_CAW_SQL_API_Creation_Export' ) ) {
+				$this->export_settings( $_POST );
+			}
+			// The else condition is not required here as WordPress handles failure in nonce verification itself.
 		}
-		// The else condition is not required here as WordPress handles failure in nonce verification itself.
 	}
-
 	/**
 	 * Save Custom SQL API Common settings.
 	 *

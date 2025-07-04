@@ -81,19 +81,16 @@ class Utils {
 	}
 
 	/**
-	 * Generate nonce for Ajax calls.
+	 * Guard: Ensure the user has required capability or block with error.
 	 *
-	 * @return void
+	 * @param string $capability The capability required.
 	 */
-	public static function generate_nonce() {
-		if ( ! empty( $_GET['nonce-for'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- The code is used to generate nonce for AJAX calls and thus no nonce verification is done here.
-			$nonce = wp_create_nonce( sanitize_text_field( wp_unslash( $_GET['nonce-for'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- The code is used to generate nonce for AJAX calls and thus no nonce verification is done here.
-			wp_send_json_success( $nonce, 200 );
-		} else {
-			wp_send_json_error( 'Invalid nonce-for', 400 );
+	public static function mo_caw_require_capability( $capability = 'manage_options' ) {
+		if ( ! current_user_can( $capability ) ) {
+			wp_send_json_error( 'You do not have enough permissions to perform this action.', 403 );
 		}
+		return true;
 	}
-
 
 	/**
 	 * Valid html

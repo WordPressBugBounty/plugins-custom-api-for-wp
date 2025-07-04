@@ -925,42 +925,45 @@ class External_API_Connection {
 	 * @return void
 	 */
 	public static function get_api_response() {
-		if ( isset( $_POST['nonce'] ) && check_ajax_referer( 'mo_caw_external_api_get_response', 'nonce' ) ) {
-			if ( isset( $_POST['api-name'] ) ) {
-				$api_name      = sanitize_text_field( wp_unslash( $_POST['api-name'] ) );
-				$api_method    = isset( $_POST['api-method'] ) ? sanitize_text_field( wp_unslash( $_POST['api-method'] ) ) : '';
-				$output_format = isset( $_POST['output-format'] ) ? sanitize_text_field( wp_unslash( $_POST['output-format'] ) ) : Constants::JSON;
+		if ( Utils::mo_caw_require_capability() ) {
+			if ( isset( $_POST['nonce'] ) && check_ajax_referer( 'mo_caw_external_api_get_response', 'nonce' ) ) {
+				if ( isset( $_POST['api-name'] ) ) {
+					$api_name      = sanitize_text_field( wp_unslash( $_POST['api-name'] ) );
+					$api_method    = isset( $_POST['api-method'] ) ? sanitize_text_field( wp_unslash( $_POST['api-method'] ) ) : '';
+					$output_format = isset( $_POST['output-format'] ) ? sanitize_text_field( wp_unslash( $_POST['output-format'] ) ) : Constants::JSON;
 
-				$api_call_class = Utils::validate_class_name( Constants::PLAN_NAMESPACE . '\Functionality\\', 'External_API_Connection' );
+					$api_call_class = Utils::validate_class_name( Constants::PLAN_NAMESPACE . '\Functionality\\', 'External_API_Connection' );
 
-				$api_call_class_instance = new $api_call_class();
+					$api_call_class_instance = new $api_call_class();
 
-				$response = $api_call_class_instance->external_api_initiate( $api_name, false, array(), false, array( 'method' => $api_method ) );
+					$response = $api_call_class_instance->external_api_initiate( $api_name, false, array(), false, array( 'method' => $api_method ) );
 
-				switch ( $output_format ) {
-					case Constants::JSON:
-						if ( json_decode( $response ) ) {
-							wp_send_json_success( json_decode( $response, true, JSON_PRETTY_PRINT ), 200 );
-						} else {
-							wp_send_json_error( 'Invalid JSON response', 400 );
-						}
-						break;
-					case Constants::TABLE:
-						$html  = '';
-						$html  = '<table id="mo-caw-test-configuration" class="table table-bordered text-center"> <tr class="table-light"><th>Attribute Name</th><th>Attribute Value</th></tr>';
-						$html .= $api_call_class_instance->generate_api_response_table_rows( '', json_decode( $response ) );
-						$html .= '</table>';
-						wp_send_json_success( $html, 200 );
-						break;
-					case Constants::RAW:
-						wp_send_json( $response );
-						break;
+					switch ( $output_format ) {
+						case Constants::JSON:
+							if ( json_decode( $response ) ) {
+								wp_send_json_success( json_decode( $response, true, JSON_PRETTY_PRINT ), 200 );
+							} else {
+								wp_send_json_error( 'Invalid JSON response', 400 );
+							}
+							break;
+						case Constants::TABLE:
+							$html  = '';
+							$html  = '<table id="mo-caw-test-configuration" class="table table-bordered text-center"> <tr class="table-light"><th>Attribute Name</th><th>Attribute Value</th></tr>';
+							$html .= $api_call_class_instance->generate_api_response_table_rows( '', json_decode( $response ) );
+							$html .= '</table>';
+							wp_send_json_success( $html, 200 );
+							break;
+						case Constants::RAW:
+							wp_send_json( $response );
+							break;
+					}
+				} else {
+					wp_send_json_error( 'Invalid API name', 400 );
 				}
 			} else {
-				wp_send_json_error( 'Invalid API name', 400 );
+				wp_send_json_error( 'Invalid nonce', 400 );
 			}
-		} else {
-			wp_send_json_error( 'Invalid nonce', 400 );
 		}
 	}
 }
+

@@ -32,17 +32,19 @@ class MO_User {
 	 * @return void
 	 */
 	public static function form_action_identifier() {
-		if ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Contact_Us' ) ) {
-			self::handle_contact_us( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Registration' ) ) {
-			self::handle_customer_registration( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Login' ) ) {
-			self::handle_customer_verification( $_POST );
-		} elseif ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Change_Account' ) ) {
-			wp_safe_redirect( 'admin.php?page=custom_api_wp_settings&tab=user-account&action=re-login', 302 );
-			exit();
-		} elseif ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Feedback' ) ) {
-			self::handle_feedback( $_POST );
+		if ( Utils::mo_caw_require_capability() ){
+			if ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Contact_Us' ) ) {
+				self::handle_contact_us( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Registration' ) ) {
+				self::handle_customer_registration( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Login' ) ) {
+				self::handle_customer_verification( $_POST );
+			} elseif ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Change_Account' ) ) {
+				wp_safe_redirect( 'admin.php?page=custom_api_wp_settings&tab=user-account&action=re-login', 302 );
+				exit();
+			} elseif ( isset( $_REQUEST['MO_CAW_MO_User_Nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['MO_CAW_MO_User_Nonce'] ) ), 'MO_CAW_MO_User_Feedback' ) ) {
+				self::handle_feedback( $_POST );
+			}
 		}
 	}
 

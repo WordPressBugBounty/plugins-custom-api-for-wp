@@ -128,7 +128,13 @@ class MO_User {
 									<input type="password" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode py-1 px-2" id="mo-caw-user-password" name="mo-caw-user-password" placeholder="Enter your password" aria-required="true" required>
 								</div>
 								<div>
-									<a class="fs-6 mo-caw-text-grey-medium" href="https://portal.miniorange.com/forgotpassword" target="_blank">Forgot password?</a>
+									<input type="checkbox" id="mo_caw_terms_privacy_checkbox" name="mo_caw_terms_privacy_checkbox" required>
+											<label class=" mo-caw-text-grey-medium" for="mo_caw_terms_privacy_checkbox" style="font-size: 0.8rem;">
+												I have read and agree to the <a href="https://plugins.miniorange.com/end-user-license-agreement" target="_blank">end user agreement</a> and <a href="https://plugins.miniorange.com/wp-content/uploads/2023/08/Plugins-Privacy-Policy.pdf" target="_blank">plugin privacy policy</a>
+											</label>
+								</div>
+								<div>
+									<a class="fs-7 mo-caw-text-grey-medium" href="https://portal.miniorange.com/forgotpassword" target="_blank">Forgot password?</a>
 								</div>
 							</div>
 							<div class="d-grid gap-2 d-md-block text-center">

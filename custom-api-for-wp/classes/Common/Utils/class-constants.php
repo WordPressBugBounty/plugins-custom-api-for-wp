@@ -87,6 +87,8 @@ class Constants {
 	public const GUI_ENDPOINT_ALREADY_EXISTS = 'A GUI-based custom API with same name, method and namespace already exists. Try again with different parameters.';
 	public const FEATURE_NOT_SUPPORTED       = 'You are not allowed to access this feature with current plan.';
 	public const API_DISABLED                = 'Sorry, the endpoint has been disabled, please contact website administrator.';
+	public const DUPLICATE_PARAMETER_NAME    = 'Duplicate parameter names found.';
+	public const NO_NUMERIC_PARAMETER_NAME   = 'Parameter name cannot be numeric.';
 
 	// HTTP method constants.
 	public const HTTP_GET    = 'get';

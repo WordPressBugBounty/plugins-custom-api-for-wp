@@ -10,8 +10,8 @@
 
 namespace MO_CAW\Common\Views;
 
-use MO_CAW\Common\Constants;
 use MO_CAW\Common\Utils;
+use MO_CAW\Common\Constants;
 
 add_action( Constants::ADMIN_MENU_HOOK, __NAMESPACE__ . '\\admin_menu' );
 add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\plugin_settings_style' );
@@ -77,6 +77,29 @@ function plugin_settings_style() {
 		wp_enqueue_script( 'mo-caw-phone-script', MO_CUSTOM_API_URL . 'classes/Common/Resources/JS/Lib/phone.min.js', array(), Utils::get_version_number(), false );
 		wp_enqueue_script( 'mo-caw-bootstrap-bundle-script', MO_CUSTOM_API_URL . 'classes/Common/Resources/JS/Bootstrap/bootstrap.bundle.min.js', array(), '5.0.2', false );
 		wp_enqueue_script( 'mo-caw-plugin-script', MO_CUSTOM_API_URL . 'classes/Common/Resources/JS/mo-caw-script.min.js', array(), Utils::get_version_number(), false );
+		$tab = '';
+		if ( isset( $_GET['tab'] ) ) {
+			// Unslash and sanitize the 'tab' parameter.
+			$tab = sanitize_text_field( wp_unslash( $_GET['tab'] ) );
+			// Optionally, verify a nonce if this value is used for sensitive actions.
+			if ( isset( $_GET['_wpnonce'] ) ) {
+				$wpnonce = sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) );
+				if ( ! wp_verify_nonce( $wpnonce, 'mo_caw_tab_action' ) ) {
+					$tab = '';
+				}
+			}
+		}
+		wp_localize_script(
+			'mo-caw-plugin-script',
+			'moCawData',
+			array(
+				'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				'nonces'  => array(
+					'external_api_nonce' => wp_create_nonce( 'mo_caw_external_api_get_response' ),
+				),
+				'tab'     => $tab,
+			)
+		);
 	}
 }
 
@@ -86,7 +109,7 @@ function plugin_settings_style() {
  * @return void
  */
 function display_plugin() {
-	if ( current_user_can( 'administrator' ) ) {
+	if ( current_user_can( 'manage_options' ) ) {
 		$ui_handler = new UI_Handler();
 		$ui_handler->display_complete_content();
 	}
@@ -98,7 +121,6 @@ function display_plugin() {
  * @return void
  */
 function register_actions() {
-	add_action( 'wp_ajax_mo_caw_get_nonce', array( 'MO_CAW\Common\Utils', 'generate_nonce' ) );
 	add_action( 'wp_ajax_mo_caw_get_plugin_version_details', array( 'MO_CAW\Common\Utils', 'get_plugin_version_details' ) );
 	add_action( 'wp_ajax_mo_caw_get_table_columns', array( 'MO_CAW\Common\DB_Utils', 'get_table_columns' ) );
 	add_action( 'wp_ajax_mo_caw_enable_disable_api', array( 'MO_CAW\Common\Views\UI_Handler', 'enable_disable_api' ) );

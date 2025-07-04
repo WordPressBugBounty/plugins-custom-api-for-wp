@@ -47,7 +47,13 @@ class MO_User {
 									<input type="password" class="form-control mo-caw-form-control mo-caw-element-to-toggle mo-caw-light-mode py-1 px-2" id="mo-caw-user-confirm-password" name="mo-caw-user-confirm-password" placeholder="Confirm your password" onkeyup="moCawValidatePassword()" aria-required="true" required>
 								</div>
 							</div>
-							<div class="d-grid gap-2 d-md-block text-center">
+							<div>
+								<input type="checkbox" id="mo_caw_terms_privacy_checkbox" name="mo_caw_terms_privacy_checkbox" required>
+									<label class=" mo-caw-text-grey-medium" for="mo_caw_terms_privacy_checkbox" style="font-size: 0.81rem;">
+										I have read and agree to the <a href="https://plugins.miniorange.com/end-user-license-agreement" target="_blank">end user agreement</a> and <a href="https://plugins.miniorange.com/wp-content/uploads/2023/08/Plugins-Privacy-Policy.pdf" target="_blank">plugin privacy policy</a>
+									</label>
+							</div>
+							<div class="d-grid gap-2 d-md-block text-center" style="margin-top: 1rem;">
 								<a class="btn mo-caw-btn-outline-blue-medium mo-caw-rounded-16 px-4" type="button" href="admin.php?page=custom_api_wp_settings&tab=user-account&action=login">Already have an account!</a>
 								<button class="btn btn-primary mo-caw-rounded-16 mo-caw-bg-blue-dark px-4" type="submit">Register</button>
 							</div>

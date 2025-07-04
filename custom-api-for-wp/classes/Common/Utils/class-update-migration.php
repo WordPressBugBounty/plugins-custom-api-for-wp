@@ -23,7 +23,26 @@ class Update_Migration {
 	public static function update_migration() {
 		$version_number = DB_Utils::get_option( 'mo_caw_last_version', '1.0.0' );
 
-		if ( version_compare( Utils::get_version_number(), $version_number ) ) {
+		if ( version_compare( Utils::get_version_number(), '3.0.0', '>=' ) ) {
+			$custom_endpoints = DB_Utils::get_configuration( array( 'type' => Constants::GUI_ENDPOINT ) );
+
+			foreach ( $custom_endpoints as $custom_endpoint ) {
+				$configuration = &$custom_endpoint['configuration'];
+				if ( ! empty( $configuration['value_specific_filter']['filter_details'] ) ) {
+
+					$filter_details = &$configuration['value_specific_filter']['filter_details'];
+					foreach ( $filter_details as $index => &$filter_detail ) {
+						if ( is_numeric( $filter_detail['parameter'] ) ) {
+							$filter_detail['parameter'] = 'Position_' . $filter_detail['parameter'];
+						}
+						if ( Constants::HTTP_DELETE === $custom_endpoint['method'] ) {
+							$filter_detail['parameter'] = 'column_param' . ( ++$index );
+						}
+					}
+				}
+				DB_Utils::update_configuration( $custom_endpoint );
+			}
+		} elseif ( version_compare( Utils::get_version_number(), $version_number ) ) {
 
 			// Convert configuration structure.
 			$gui_config          = DB_Utils::get_option( 'CUSTOM_API_WP_LIST', array() );

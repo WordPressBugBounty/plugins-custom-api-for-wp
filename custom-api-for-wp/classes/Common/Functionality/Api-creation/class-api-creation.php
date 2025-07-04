@@ -61,7 +61,7 @@ class API_Creation {
 
 				$filter_details = $configuration['value_specific_filter']['filter_details'];
 
-				$route = $route . '/(?P<' . $filter_details[0]['column'] . '>\S+)';
+				$route = $route . '/(?P<' . $filter_details[0]['parameter'] . '>\S+)';
 			}
 			$args['endpoint_configuration'] = $custom_endpoint;
 
@@ -109,8 +109,9 @@ class API_Creation {
 		}
 
 		if ( \strtoupper( Constants::HTTP_GET ) === $method ) {
-			$final_get_query = 'SELECT ' . implode( ',', $endpoint_config['request_columns'] ) . ' FROM ' . $endpoint_config['table'];
+			$final_get_query = 'SELECT ' . implode( ',', array_map( 'esc_sql', $endpoint_config['request_columns'] ) ) . ' FROM ' . esc_sql( $endpoint_config['table'] );
 			$filter_details  = $endpoint_config['value_specific_filter']['filter_details'] ?? array();
+			$where_values    = array();
 
 			if ( ! empty( $filter_details ) ) {
 				$column1_value     = $request[ $filter_details[0]['column'] ] ?? '';
@@ -127,9 +128,10 @@ class API_Creation {
 						$column1_value     = '%' . $column1_value . '%';
 					}
 				}
-				$final_get_query = $final_get_query . esc_sql( $column1_condition ) . "'" . $column1_value . "'";
+				$final_get_query .= esc_sql( $column1_condition ) . ' %s';
+				$where_values[]   = $column1_value;
 			}
-			$my_rows = $wpdb->get_results( $final_get_query ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.PreparedSQL.NotPrepared  -- The query gets result for the Custom API.
+			$my_rows = $wpdb->get_results( $wpdb->prepare( $final_get_query, $where_values ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery -- Query is now properly prepared
 		}
 
 		if ( $wpdb->last_error ) {
