@@ -4,7 +4,7 @@ Tags: custom-endpoints, api, rest api, external api, custom api, rest, rest rout
 Requires at least: 3.0.1
 Requires PHP: 5.4
 Tested up to: 6.8
-Stable tag: 4.2.3
+Stable tag: 4.3.0
 License: Expat
 License URI: https://plugins.miniorange.com/mit-license
 
@@ -21,6 +21,30 @@ You can easily interact with the WordPress database to perform **CRUD operations
 
 [Custom API for WP plugin](https://plugins.miniorange.com/custom-api-for-wordpress) takes care of writing the **complex SQL queries** to fetch/update data and provide you with a very simple User Interface to create or generate custom REST endpoints.
 This plugin also provides the **filter operations in which you can filter the data** you want to show in the API endpoint response.
+
+## 🆓FREE Plan Features
+
+* **Unlimited GET APIs:** Create as many GET APIs as you need to fetch data from WordPress tables.
+* **One Advanced API using SQL:** Build a single advanced API with custom SQL queries to perform CRUD (GET, POST, PUT, DELETE) operations.
+* **External API Integration (JSON Only):** Connect to third-party APIs that return JSON data.
+  - **Hooks Support for External APIs:** Use hooks to trigger and execute connected external APIs.
+
+##💲PREMIUM Plan Features 
+* **Unlimited RESTful APIs:** Create APIs with all HTTP methods - GET, POST, PUT, DELETE.
+ - **Custom Filters on API Data:** Apply filters to refine data retrieved in Custom APIs.
+ - **Customizable API Response:** Format API responses to match your exact requirements in custom APIs.
+ -  **Role-Based Access Control:** Restrict access to custom APIs based on user roles.
+ - **Conditional Logic & Filters:** Add logic-based rules and conditions to custom APIs. Use query parameters to filter API responses on the go.
+
+* **Unlimited Advanced APIs with SQL:** Build complex and fully customized APIs using SQL queries to perform CRUD (GET, POST, PUT, DELETE) operations.
+ - **Customizable API Response:** Format API responses to match your exact requirements in custom APIs.
+ -  **Role-Based Access Control:** Restrict access to custom APIs based on user roles.
+
+* **Unlimited External API Integrations:** Connect to as many third-party APIs as needed that return JSON, XML, GRAPHQL or SOAP responses.
+ - **Hooks Support for External APIs:** Use hooks to trigger and execute connected external APIs.
+ - **Shortcode & Template Tag Display:** Easily display data from external API on your frontend using shortcodes or template tags.
+ - **Secure Authentication for External APIs:** Supports OAuth2, Bearer Tokens, and API Key authentication methods.
+ - **Dependent API:** Dynamically retrieve a token from an external API to authenticate requests to the data API.
 
 
 == Third-party/External API Integration into WordPress ==
@@ -86,38 +110,6 @@ For example – If you have a WordPress/Woocommerce site and want to sync the us
 
 These solutions can be used additionally along with the plugin. To know more details, contact us at _apisupport@xecurify.com_ and let us know your requirements. 
 
-== Premium Plans ==
-
-### Basic API Creation Plan
-
-* Create Unlimited Simple Custom APIs using GUI
-* Apply filters on the data
-* Customizable API Response Format
-* Role-Based Restriction on Custom APIs
-
-### Advanced API Creation Plan
-
-* Basic API Creation plan features +
-* Create Unlimited Advanced Custom APIs using SQL
-* Filter API Response with Dynamic Parameters
-* Add Filters and Conditional Logic
-
-
-### Connect External API Plan
-
-* Connect to Unlimited External APIs
-* Supports JSON, XML, SOAP Based APIs
-* OAuth2, Bearer, API Key Based Authentication for External APIs
-* Data Display using Shortcode and Template Tag
-
-
-
-####Type of APIs supported
-* ‘HTTP GET` (This can be used to retrieve data from your WordPress)
-* ‘HTTP POST’ (This can be used to insert data in your WordPress)
-* ‘HTTP PUT’ (This can be used to update data in your WordPress)
-* ‘HTTP DELETE’ (This can be used to delete data in your WordPress)
-
 ### Type of Data which you can retrieve with Custom Endpoints
 * WP Users and User Meta.
 * WP Roles and Capabilities.
@@ -173,11 +165,10 @@ Yes, the plugin’s Connect to External API feature can be used to connect the Z
 
 == Screenshots ==
 1. List all created APIs
+2. External API Integration
 2. Create API UI
-3. View API 
-4. Response to API calls
-5. Create REST API using custom SQL
-6. External API Integration
+3. Create REST API using custom SQL
+4. View API UI
 
 
 == Changelog ==
@@ -292,6 +283,9 @@ Yes, the plugin’s Connect to External API feature can be used to connect the Z
 = 4.2.3 =
 * Bug fixes
 * UI improvements
+
+= 4.3.0 =
+* Readme updates
 
 == Upgrade Notice ==
 
