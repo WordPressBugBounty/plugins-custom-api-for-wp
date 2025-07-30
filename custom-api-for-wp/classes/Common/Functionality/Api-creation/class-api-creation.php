@@ -114,7 +114,8 @@ class API_Creation {
 			$where_values    = array();
 
 			if ( ! empty( $filter_details ) ) {
-				$column1_value     = $request[ $filter_details[0]['column'] ] ?? '';
+				$param_name        = $filter_details[0]['parameter'];
+				$column1_value     = $request->get_param( $param_name );
 				$column1_value     = esc_sql( urldecode( $column1_value ) );
 				$column1_condition = esc_sql( $filter_details[0]['condition'] );
 				$final_get_query   = $final_get_query . ' WHERE ' . esc_sql( $filter_details[0]['column'] );

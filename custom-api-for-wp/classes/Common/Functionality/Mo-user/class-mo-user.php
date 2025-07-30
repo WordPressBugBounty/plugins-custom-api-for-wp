@@ -82,8 +82,8 @@ class MO_User {
 		$string_to_hash         = $customer_key . $current_time_in_millis . $api_key;
 		$hash_value             = hash( 'sha512', $string_to_hash );
 		$from_email             = $email;
-		$version                = Constants::PLAN_NAME . $utils::get_version_number();
-		$query                  = '[Connect to External APIs | Custom API for WP : ' . $version . '] ' . $query;
+		$version                = $utils::get_version_number();
+		$query                  = '[Custom API for WP : ' . $version . '] ' . $query;
 		$server                 = isset( $_SERVER['SERVER_NAME'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_NAME'] ) ) : '';
 		$content                = '<div >Hello, <br><br>First Name :' . $current_user->user_firstname . '<br><br>Last  Name :' . $current_user->user_lastname . '   <br><br>Company :<a href="' . $server . '" target="_blank" >' . $server . '</a><br><br>Phone Number :' . $phone . '<br><br>Email :<a href="mailto:' . $from_email . '" target="_blank">' . $from_email . '</a><br><br>Query :' . $query . '</div>';
 		$fields                 = array(
