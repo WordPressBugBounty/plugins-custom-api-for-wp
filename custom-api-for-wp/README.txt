@@ -3,8 +3,8 @@ Contributors: cyberlord92
 Tags: custom-endpoints, api, rest api, external api, custom api, rest, rest route, wp rest api, crud, webhooks, wp automate, rest endpoints
 Requires at least: 3.0.1
 Requires PHP: 5.4
-Tested up to: 6.8
-Stable tag: 4.3.1
+Tested up to: 6.9
+Stable tag: 4.5.0
 License: Expat
 License URI: https://plugins.miniorange.com/mit-license
 
@@ -289,6 +289,13 @@ Yes, the plugin’s Connect to External API feature can be used to connect the Z
 
 = 4.3.1 =
 * Bug fixes related to filter not working in Custom APIs.
+
+= 4.4.0 =
+* Bug fixes related to XML APIs not working in External API Integration.
+
+= 4.5.0 =
+* Compatibility with WordPress v6.9.
+
 
 == Upgrade Notice ==
 

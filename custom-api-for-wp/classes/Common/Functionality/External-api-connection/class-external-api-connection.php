@@ -11,9 +11,9 @@
 namespace MO_CAW\Common\Functionality;
 
 use Exception;
-use MO_CAW\Common\Utils;
-use MO_CAW\Common\DB_Utils;
 use MO_CAW\Common\Constants;
+use MO_CAW\Common\DB_Utils;
+use MO_CAW\Common\Utils;
 
 
 /**
@@ -149,7 +149,7 @@ class External_API_Connection {
 				throw new Exception( $api_response->get_error_message() );
 			}
 
-			return ( isset( $api_config['configuration']['response_body_type'] ) && Constants::XML === $api_config['configuration']['response_body_type'] ) ? Utils::convert_xml_to_json( $api_response['body'] ) : $api_response['body'];
+			return ( isset( $endpoint_config['body']['request_type'] ) && Constants::XML === $endpoint_config['body']['request_type'] ) ? Utils::convert_xml_to_json( $api_response['body'] ) : $api_response['body'];
 
 		} catch ( Exception $e ) {
 			return wp_json_encode(
