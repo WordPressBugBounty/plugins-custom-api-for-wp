@@ -22,7 +22,7 @@
  * Plugin Name:       Custom API for WP
  * Plugin URI:        https://wordpress.org/plugins/custom-api-for-wp/
  * Description:       This plugin helps in creating custom API endpoints for extracting customized data from the database. The plugin can also be extended to integrate external APIs in WordPress.
- * Version:           4.5.0
+ * Version:           4.6.0
  * Author:            miniOrange
  * Author URI:        https://www.miniorange.com
  * License:           Expat
