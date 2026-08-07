@@ -4,7 +4,7 @@ Tags: custom-endpoints, api, rest api, external api, custom api, rest, rest rout
 Requires at least: 3.0.1
 Requires PHP: 5.4
 Tested up to: 7.0
-Stable tag: 4.6.0
+Stable tag: 4.7.0
 License: Expat
 License URI: https://plugins.miniorange.com/mit-license
 
@@ -298,6 +298,9 @@ Yes, the plugin’s Connect to External API feature can be used to connect the Z
 
 = 4.6.0 =
 * Compatibility with WordPress v7.0.
+
+= 4.7.0 =
+* Bug fixes.
 
 
 == Upgrade Notice ==
