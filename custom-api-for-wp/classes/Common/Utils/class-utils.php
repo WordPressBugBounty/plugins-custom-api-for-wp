@@ -93,6 +93,71 @@ class Utils {
 	}
 
 	/**
+	 * Validate and normalize an API name received in a request.
+	 *
+	 * Mirrors the pattern enforced on the API name input fields so that requests
+	 * crafted outside the UI are held to the same rules. The raw value is matched
+	 * before sanitization, so that stripped characters cannot turn a rejected value
+	 * into an accepted one.
+	 *
+	 * @param mixed $api_name API name to validate.
+	 *
+	 * @return string Normalized API name, or an empty string when the value is not acceptable.
+	 */
+	public static function get_validated_api_name( $api_name ) {
+		if ( ! is_scalar( $api_name ) ) {
+			return '';
+		}
+
+		$api_name = wp_unslash( (string) $api_name );
+
+		if ( strlen( $api_name ) > 25 || ! preg_match( '/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/', $api_name ) ) {
+			return '';
+		}
+
+		return sanitize_text_field( $api_name );
+	}
+
+	/**
+	 * Validate and normalize an API namespace received in a request.
+	 *
+	 * @param mixed $namespace Namespace to validate.
+	 *
+	 * @return string Normalized namespace, or an empty string when the value is not acceptable.
+	 */
+	public static function get_validated_api_namespace( $namespace ) {
+		if ( ! is_scalar( $namespace ) ) {
+			return '';
+		}
+
+		$namespace = wp_unslash( (string) $namespace );
+
+		if ( strlen( $namespace ) > 15 || ! preg_match( '/^[A-Za-z]+\/v[0-9]+$/', $namespace ) ) {
+			return '';
+		}
+
+		return sanitize_text_field( $namespace );
+	}
+
+	/**
+	 * Validate and normalize an HTTP method received in a request.
+	 *
+	 * @param mixed $method HTTP method to validate.
+	 *
+	 * @return string Normalized method, or an empty string when the value is not acceptable.
+	 */
+	public static function get_validated_api_method( $method ) {
+		if ( ! is_scalar( $method ) ) {
+			return '';
+		}
+
+		$method          = strtolower( wp_unslash( (string) $method ) );
+		$allowed_methods = array( Constants::HTTP_GET, Constants::HTTP_POST, Constants::HTTP_PUT, Constants::HTTP_DELETE );
+
+		return in_array( $method, $allowed_methods, true ) ? $method : '';
+	}
+
+	/**
 	 * Valid html
 	 *
 	 * Helper function for escaping.

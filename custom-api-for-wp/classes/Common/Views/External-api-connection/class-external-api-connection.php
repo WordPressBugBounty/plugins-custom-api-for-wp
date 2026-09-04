@@ -938,6 +938,12 @@ class External_API_Connection {
 
 					$response = $api_call_class_instance->external_api_initiate( $api_name, false, array(), false, array( 'method' => $api_method ) );
 
+					$decoded_response = json_decode( $response, true );
+
+					if ( ! empty( $decoded_response['mo_error'] ) ) {
+						wp_send_json_error( $decoded_response['error'], 400 );
+					}
+
 					switch ( $output_format ) {
 						case Constants::JSON:
 							if ( json_decode( $response ) ) {

@@ -89,6 +89,10 @@ class Constants {
 	public const API_DISABLED                = 'Sorry, the endpoint has been disabled, please contact website administrator.';
 	public const DUPLICATE_PARAMETER_NAME    = 'Duplicate parameter names found.';
 	public const NO_NUMERIC_PARAMETER_NAME   = 'Parameter name cannot be numeric.';
+	public const INVALID_API_NAME            = 'Invalid API name. It should be of maximum length 25 and only \'-\' is accepted in between along with [A-Z, a-z and 0-9].';
+	public const INVALID_API_NAMESPACE       = 'Invalid namespace. It should be of maximum length 15 and of the form [A-Z, a-z]/v[0-9] (eg. mo/v1).';
+	public const INVALID_API_METHOD          = 'Invalid method. Only GET, POST, PUT and DELETE are supported.';
+	public const API_NOT_FOUND               = 'The requested API does not exist. Please select an API from the list of configured APIs.';
 
 	// HTTP method constants.
 	public const HTTP_GET    = 'get';
@@ -117,6 +121,7 @@ class Constants {
 
 	// External API connection status messages constants.
 	public const EXTERNAL_API_NAME_NOT_FOUND   = 'API name not recognized';
+	public const EXTERNAL_API_METHOD_NOT_FOUND = 'API name is recognized but not for the requested method';
 	public const SHORTCODE_SETTINGS_NOT_FOUND  = 'Shortcode settings not found';
 	public const INVALID_HEADERS_FORMAT        = 'Headers not passed as an array.';
 	public const EXTERNAL_API_EXCEPTION_PREFIX = 'There was an error when trying to execute External API: ';

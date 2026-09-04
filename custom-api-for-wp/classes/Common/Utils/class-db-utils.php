@@ -246,6 +246,20 @@ class DB_Utils {
 	}
 
 	/**
+	 * Get the first configuration matching the given filter.
+	 *
+	 * @param array $row_filter    Values to filter row on, same as get_configuration().
+	 * @param array $column_filter Names of the columns to return.
+	 *
+	 * @return array Matching configuration, or an empty array when there is no match.
+	 */
+	public static function get_single_configuration( $row_filter, $column_filter = array() ) {
+		$configurations = self::get_configuration( $row_filter, $column_filter );
+
+		return is_array( $configurations ) && ! empty( $configurations[0] ) ? $configurations[0] : array();
+	}
+
+	/**
 	 * Delete a plugin configuration of a configuration_type.
 	 *
 	 * @param array $row_filter    Values to filter row on.
@@ -325,6 +339,12 @@ class DB_Utils {
 	public static function get_all_column_names( $table_name ) {
 		global $wpdb;
 		$column_names = array();
+
+		// Without a usable table name DESCRIBE would be malformed, so skip the query entirely.
+		if ( ! is_string( $table_name ) || ! preg_match( '/^[A-Za-z0-9_]+$/', $table_name ) ) {
+			return $column_names;
+		}
+
 		$column_names = $wpdb->get_col( $wpdb->prepare( 'DESCRIBE %1s', $table_name ), 0 ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder -- Quotes not required here as it's a table name.
 		return $column_names;
 	}

@@ -90,7 +90,16 @@ class External_API_Connection {
 	 */
 	public static function external_api_initiate( $api_name, $dynamic_body = array(), $dynamic_header = array(), $dynamic_endpoint = '' ) {
 
-		$api_config = self::get_api_connection_configuration( $api_name );
+		try {
+			$api_config = self::get_api_connection_configuration( $api_name );
+		} catch ( Exception $e ) {
+			return wp_json_encode(
+				array(
+					'error'    => Constants::EXTERNAL_API_EXCEPTION_PREFIX . $e->getMessage(),
+					'mo_error' => true,
+				)
+			);
+		}
 
 		$request_method = $api_config['method'];
 
@@ -190,6 +199,8 @@ class External_API_Connection {
 	 * @param array $endpoint_config An array containing the configuration settings for the API. It includes the
 	 * headers and body type for the request.
 	 *
+	 * @throws Exception Throws an exception when the passed headers cannot be merged.
+	 *
 	 * @return array Final Request headers for the API request.
 	 */
 	public static function get_headers( $additional_arguments, $endpoint_config ) {
@@ -199,8 +210,8 @@ class External_API_Connection {
 		} else {
 			try {
 				$request_headers = array_merge( $endpoint_config['header'], $additional_arguments['request_headers'] );
-			} catch ( Exception $e ) {
-				wp_send_json_error( Constants::EXTERNAL_API_EXCEPTION_PREFIX . Constants::INVALID_HEADERS_FORMAT, 400 );
+			} catch ( \Throwable $e ) {
+				throw new Exception( Constants::INVALID_HEADERS_FORMAT );
 			}
 		}
 
@@ -341,29 +352,29 @@ class External_API_Connection {
 	 */
 	public static function get_api_connection_configuration( $api_name, $request_method = false ) {
 
-		try {
+		$request_arguments = array(
+			'type'            => Constants::EXTERNAL_ENDPOINT,
+			'connection_name' => $api_name,
+			'api_type'        => Constants::SIMPLE_API_EXTERNAL_API_TYPE,
+		);
 
-			$request_arguments = array(
-				'type'            => Constants::EXTERNAL_ENDPOINT,
-				'connection_name' => $api_name,
-				'method'          => $request_method,
-				'api_type'        => Constants::SIMPLE_API_EXTERNAL_API_TYPE,
-			);
+		// The method is matched in PHP so that one query can tell an unknown connection apart from a wrong method.
+		$name_matches = DB_Utils::get_configuration( $request_arguments );
 
-			if ( empty( $request_method ) ) {
-				unset( $request_arguments['method'] );
-			}
-
-			$api_config = DB_Utils::get_configuration( $request_arguments )[0];
-
-			if ( empty( $api_config ) ) {
-				throw new Exception( Constants::EXTERNAL_API_NAME_NOT_FOUND );
-			}
-
-			return $api_config;
-
-		} catch ( Exception $e ) {
-			wp_send_json_error( Constants::EXTERNAL_API_EXCEPTION_PREFIX . $e->getMessage(), 400 );
+		if ( empty( $name_matches ) ) {
+			throw new Exception( Constants::EXTERNAL_API_NAME_NOT_FOUND );
 		}
+
+		if ( empty( $request_method ) ) {
+			return $name_matches[0];
+		}
+
+		foreach ( $name_matches as $api_config ) {
+			if ( isset( $api_config['method'] ) && 0 === strcasecmp( (string) $api_config['method'], (string) $request_method ) ) {
+				return $api_config;
+			}
+		}
+
+		throw new Exception( Constants::EXTERNAL_API_METHOD_NOT_FOUND );
 	}
 }

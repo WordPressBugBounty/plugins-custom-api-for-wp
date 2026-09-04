@@ -12,6 +12,7 @@ namespace MO_CAW\Common\Functionality;
 
 use Exception;
 use MO_CAW\Common\Constants;
+use MO_CAW\Common\Utils;
 
 /**
  * Class deals with display of shortcode content.
@@ -26,12 +27,29 @@ class Display_Shortcode {
 	 */
 	public static function render_shortcode( $arguments ) {
 		try {
-			$api_name = $arguments['api'];
-			$method   = $arguments['method'] ?? '';
+			$arguments = shortcode_atts(
+				array(
+					'api'    => '',
+					'method' => '',
+				),
+				$arguments,
+				'mo_custom_api_shortcode'
+			);
+
+			$api_name = Utils::get_validated_api_name( $arguments['api'] );
+			$method   = Utils::get_validated_api_method( $arguments['method'] );
+
+			ob_start();
+
+			// The method attribute is optional, but a supplied one that fails validation must not fall back to matching any method.
+			if ( empty( $api_name ) || ( ! empty( $arguments['method'] ) && empty( $method ) ) ) {
+				throw new Exception( Constants::DEFAULT_API_ERROR_MESSAGE );
+			}
+
 			$api_data = apply_filters( 'mo_caw_execute_external_api', $api_name, $method, array() );
 			$api_data = json_decode( $api_data, true );
-			ob_start();
-			if ( ! empty( $api_data['mo_error'] ) ) {
+
+			if ( JSON_ERROR_NONE !== json_last_error() || ! is_array( $api_data ) || ! empty( $api_data['mo_error'] ) ) {
 				throw new Exception( Constants::DEFAULT_API_ERROR_MESSAGE );
 			}
 			echo '<div style="font-family:Calibri;padding:0 3%;">';

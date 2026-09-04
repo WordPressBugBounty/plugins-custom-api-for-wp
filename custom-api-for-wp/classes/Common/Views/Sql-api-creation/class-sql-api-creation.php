@@ -73,6 +73,12 @@ class SQL_API_Creation {
 	 * @var string
 	 */
 	private $plan_status = 'disabled';
+	/**
+	 * Reason why the requested API could not be loaded, empty when the request is valid.
+	 *
+	 * @var string
+	 */
+	private $invalid_request_message = '';
 
 	/**
 	 * Default class constructor
@@ -86,18 +92,32 @@ class SQL_API_Creation {
 			$this->sql_endpoint_config = ! empty( $session_form_data ) ? $session_form_data : $this->sql_endpoint_config;
 
 			if ( Constants::EDIT === $action || Constants::VIEW === $action || Constants::TEST === $action || Constants::DELETE === $action ) {
-				$this->api_name  = isset( $_GET['api-name'] ) ? sanitize_text_field( wp_unslash( $_GET['api-name'] ) ) : $this->api_name;
-				$this->method    = isset( $_GET['method'] ) ? sanitize_text_field( wp_unslash( $_GET['method'] ) ) : $this->method;
-				$this->namespace = isset( $_GET['namespace'] ) ? sanitize_text_field( wp_unslash( $_GET['namespace'] ) ) : $this->namespace;
+				$this->api_name  = isset( $_GET['api-name'] ) ? Utils::get_validated_api_name( $_GET['api-name'] ) : $this->api_name; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Unslashing and sanitization is done in get_validated_api_name().
+				$this->method    = isset( $_GET['method'] ) ? Utils::get_validated_api_method( $_GET['method'] ) : $this->method; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Unslashing and sanitization is done in get_validated_api_method().
+				$this->namespace = isset( $_GET['namespace'] ) ? Utils::get_validated_api_namespace( $_GET['namespace'] ) : $this->namespace; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash -- Unslashing and sanitization is done in get_validated_api_namespace().
 
-				$row_filter = array(
-					'connection_name' => $this->api_name,
-					'type'            => Constants::SQL_ENDPOINT,
-					'method'          => $this->method,
-					'namespace'       => $this->namespace,
-				);
+				if ( empty( $this->api_name ) ) {
+					$this->invalid_request_message = Constants::INVALID_API_NAME;
+				} elseif ( empty( $this->method ) ) {
+					$this->invalid_request_message = Constants::INVALID_API_METHOD;
+				} elseif ( empty( $this->namespace ) ) {
+					$this->invalid_request_message = Constants::INVALID_API_NAMESPACE;
+				}
 
-				$this->sql_endpoint_config = empty( $this->sql_endpoint_config ) ? DB_Utils::get_configuration( $row_filter )[0] : $this->sql_endpoint_config;
+				if ( empty( $this->invalid_request_message ) ) {
+					$row_filter = array(
+						'connection_name' => $this->api_name,
+						'type'            => Constants::SQL_ENDPOINT,
+						'method'          => $this->method,
+						'namespace'       => $this->namespace,
+					);
+
+					$this->sql_endpoint_config = empty( $this->sql_endpoint_config ) ? DB_Utils::get_single_configuration( $row_filter ) : $this->sql_endpoint_config;
+
+					if ( empty( $this->sql_endpoint_config ) ) {
+						$this->invalid_request_message = Constants::API_NOT_FOUND;
+					}
+				}
 			} elseif ( Constants::ADD === $action && Constants::DISABLED !== $this->license_status ) {
 				$this->namespace = $this->sql_endpoint_config['namespace'] ?? $this->namespace;
 				$this->method    = $this->sql_endpoint_config['method'] ?? $this->method;
@@ -120,6 +140,11 @@ class SQL_API_Creation {
 	 * @return void
 	 */
 	public function display_sql_api_creation_ui( $tab, $action ) {
+		if ( ! empty( $this->invalid_request_message ) ) {
+			$this->display_invalid_request( $this->invalid_request_message );
+			return;
+		}
+
 		switch ( $action ) {
 			case Constants::ADD:
 				$this->display_api_creation_add_or_edit( $action );
@@ -140,6 +165,22 @@ class SQL_API_Creation {
 				$this->display_api_creation_all_config();
 				break;
 		}
+	}
+
+	/**
+	 * Display an error instead of the requested API when the request could not be honoured.
+	 *
+	 * @param string $message Reason why the request was rejected.
+	 *
+	 * @return void
+	 */
+	private function display_invalid_request( $message ) {
+		?>
+		<div class="alert alert-danger mo-caw-rounded-8" role="alert">
+			<?php echo esc_html( $message ); ?>
+		</div>
+		<a class="btn btn-primary mo-caw-rounded-16 mo-caw-bg-blue-dark px-4" href="<?php echo esc_url( 'admin.php?page=custom_api_wp_settings&tab=custom-sql-api' ); ?>">Back to Custom SQL APIs</a>
+		<?php
 	}
 
 	/**
