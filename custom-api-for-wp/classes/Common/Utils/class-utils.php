@@ -230,7 +230,7 @@ class Utils {
 		if ( count( $namespaces ) > 0 ) {
 			$returned_response = $xml_object->children( $namespaces['soap'] )->Body->children();
 		} else {
-			$returned_response = simplexml_load_string( $data, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_DTDATTR | LIBXML_DTDLOAD | LIBXML_XINCLUDE | LIBXML_SCHEMA_CREATE );
+			$returned_response = simplexml_load_string( $data, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_NONET );
 		}
 		return wp_json_encode( $returned_response );
 	}

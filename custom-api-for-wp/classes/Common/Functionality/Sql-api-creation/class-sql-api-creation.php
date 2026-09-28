@@ -15,6 +15,7 @@ namespace MO_CAW\Common\Functionality;
 use MO_CAW\Common\Utils;
 use MO_CAW\Common\DB_Utils;
 use MO_CAW\Common\Constants;
+use MO_CAW\Common\SQL_Query_Validator;
 
 /**
  * Class deals with SQL API Creation feature functionality.
@@ -182,6 +183,13 @@ class SQL_API_Creation {
 	 * @return string  In JSON format.
 	 */
 	private function run_sql_query( $dynamic_values, $sql_query, $error_response, $method ) {
+		if ( ! SQL_Query_Validator::is_valid( $sql_query ) ) {
+			return array(
+				'status'      => Constants::ERROR,
+				'status_code' => 400,
+				'data'        => Constants::QUERY_EXECUTION_FAILED,
+			);
+		}
 
 		$sql_query = $this->replace_dynamic_values( $sql_query, $dynamic_values, $error_response );
 
@@ -198,32 +206,7 @@ class SQL_API_Creation {
 	 * @return string
 	 */
 	protected function replace_dynamic_values( $sql_query, $dynamic_values, $error_response ) {
-		global $wpdb;
-		if ( empty( $dynamic_values ) || ! is_array( $dynamic_values ) ) {
-			return $sql_query;
-		}
-		$pattern = '/{{([A-Za-z0-9-_]+)}}/';
-		preg_match_all( $pattern, $sql_query, $matches );
-		$params                = array();
-		$expected_placeholders = 0;
-		foreach ( $matches[1] as $param_name ) {
-			++$expected_placeholders;
-			if ( isset( $dynamic_values[ $param_name ] ) ) {
-				$params[]  = $dynamic_values[ $param_name ];
-				$sql_query = str_replace( '{{' . $param_name . '}}', '%s', $sql_query ); // Use placeholder.
-			} else {
-				wp_send_json( $error_response, 400 );
-			}
-		}
-		$actual_placeholders = substr_count( $sql_query, '%s' );
-		if ( count( $params ) !== $actual_placeholders || $expected_placeholders !== $actual_placeholders ) {
-			wp_send_json( $error_response, 400 );
-		}
-
-		// Use wpdb->prepare to safely insert values.
-		$prepared_query = $wpdb->prepare( $sql_query, ...$params );
-
-		return $prepared_query;
+		return SQL_Query_Validator::prepare_for_execution( $sql_query, $dynamic_values, $error_response );
 	}
 
 	/**
@@ -234,23 +217,22 @@ class SQL_API_Creation {
 	 *
 	 * @return string|int
 	 */
-	protected function execute_query( $sql_query, $method ) {
+	protected function execute_query( $sql_query, $method ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Method is kept for callers; SELECT always uses get_results.
 		global $wpdb;
+		unset( $method );
 
 		$result = array();
 
 		if ( ! empty( $sql_query ) ) {
-			if ( \strtoupper( Constants::HTTP_GET ) === $method ) {
-				$result['data'] = $wpdb->get_results( $sql_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery -- SQL queries are already prepared and sanitized in the parent function, and there is nonce verification, as well as administrator, check while accepting the queries from the user.
-			} else {
-				$result['data'] = $wpdb->query( $sql_query ); //phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery -- SQL queries are already prepared and sanitized in the parent function, and there is nonce verification, as well as administrator, check while accepting the queries from the user.
-			}
+			$wpdb->hide_errors();
+			$result['data'] = $wpdb->get_results( $sql_query ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.DirectQuery -- Query is validated as SELECT and values are bound via prepare when {{param}} tokens exist.
 		}
 
 		if ( $wpdb->last_error ) {
+			error_log( 'Custom API SQL query failed: ' . $wpdb->last_error ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Server-side only; clients receive a generic message.
 			$result['status']      = Constants::ERROR;
 			$result['status_code'] = 400;
-			$result['data']        = $wpdb->last_error;
+			$result['data']        = Constants::QUERY_EXECUTION_FAILED;
 		} else {
 			$result['status']      = Constants::SUCCESS;
 			$result['status_code'] = 200;

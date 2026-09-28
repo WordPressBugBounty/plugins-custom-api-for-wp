@@ -389,12 +389,13 @@ class SQL_API_Creation {
 				</div>
 				<div>
 					<div class="d-flex justify-content-between align-items-center mb-2 mo-caw-form-content d-none" request-methods="get post put delete">
-						<label class="form-label mo-caw-form-label fw-bolder">SQL Queries</em> <i class="fas fa-info rounded-circle border py-1 px-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Write a SQL query. Any custom parameters to be replaced dynamically should be in the following format: E.g. &quot;{{parameter_name}}&quot;."></i></label>
+						<label class="form-label mo-caw-form-label fw-bolder">SQL Queries <i class="fas fa-info rounded-circle border py-1 px-2" data-bs-toggle="tooltip" data-bs-placement="right" title="Each query must be a single SELECT. Use {{parameter_name}} for request values. Writes belong on the GUI API."></i></label>
 						<span>
 							<button class="mo-caw-disable-standard-plan mo-caw-disable-bac-plan mo-caw-disable-eai-plan mo-caw-add-standard-tooltip mo-caw-add-bac-tooltip mo-caw-add-eai-tooltip border-0 bg-white p-0" type="button" onclick="moCawAddField('sql', 'mo-caw-custom-sql-api-query-duplicate-div-0', 'mo-caw-custom-sql-api-query-duplicate-div-', this.nextElementSibling)" ><i class="fa-solid fa-plus mo-caw-text-grey-medium border border-3 rounded p-1"></i></button>
 							<button class="mo-caw-disable-standard-plan mo-caw-disable-bac-plan mo-caw-disable-eai-plan mo-caw-add-standard-tooltip mo-caw-add-bac-tooltip mo-caw-add-eai-tooltip border-0 bg-white p-0" type="button" onclick="moCawRemoveField('mo-caw-custom-sql-api-query-duplicate-div-', this)" ><i class="fa-solid fa-minus mo-caw-text-grey-medium border border-3 rounded p-1"></i></button>
 						</span>
 					</div>
+					<p class="mo-caw-form-content d-none text-muted small mb-2" request-methods="get post put delete">SQL APIs accept a single SELECT per field. Use {{param}} for request values. Writes use the GUI API.</p>
 					<div class="mo-caw-form-content d-none mb-3" request-methods="get post put delete">
 						<div id="mo-caw-sortable-list" class="list-group col">
 						<?php if ( ! empty( $this->queries ) ) : ?>

@@ -220,5 +220,62 @@ class Update_Migration {
 
 			DB_Utils::update_option( 'mo_caw_last_version', Utils::get_version_number() );
 		}
+
+		if ( ! DB_Utils::get_option( 'mo_caw_credentials_encrypted' ) ) {
+			self::migrate_encrypt_stored_credentials();
+			DB_Utils::update_option( 'mo_caw_credentials_encrypted', true );
+		}
+	}
+
+	/**
+	 * Encrypt existing External API authorization credentials at rest.
+	 *
+	 * Reads stored configuration without decrypting so already-prefixed values are
+	 * skipped. Safe to retry: unchanged blobs are not written again.
+	 *
+	 * @return void
+	 */
+	private static function migrate_encrypt_stored_credentials() {
+		global $wpdb;
+
+		$table = $wpdb->prefix . 'mo_external_api_config';
+		$rows  = $wpdb->get_results( "SELECT * FROM `{$table}`" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is prefixed; migration reads all external API rows.
+
+		if ( empty( $rows ) ) {
+			return;
+		}
+
+		foreach ( $rows as $row ) {
+			$configuration = maybe_unserialize( $row->configuration );
+			if ( ! is_array( $configuration ) ) {
+				continue;
+			}
+
+			$original_serialized = maybe_serialize( $configuration );
+			$encrypted           = Credential_Encryption::encrypt_authorization_fields( $configuration );
+
+			if ( maybe_serialize( $encrypted ) === $original_serialized ) {
+				continue;
+			}
+
+			$table_configuration = array(
+				'type'                => $row->type,
+				'connection_name'     => $row->connection_name,
+				'method'              => $row->method,
+				'api_type'            => $row->api_type ?? Constants::SIMPLE_API_EXTERNAL_API_TYPE,
+				'chained_connections' => maybe_unserialize( $row->chained_connections ),
+				'is_used_by'          => maybe_unserialize( $row->is_used_by ),
+				'configuration'       => $encrypted,
+			);
+
+			if ( ! is_array( $table_configuration['chained_connections'] ) ) {
+				$table_configuration['chained_connections'] = array();
+			}
+			if ( ! is_array( $table_configuration['is_used_by'] ) ) {
+				$table_configuration['is_used_by'] = array();
+			}
+
+			DB_Utils::update_configuration( $table_configuration );
+		}
 	}
 }

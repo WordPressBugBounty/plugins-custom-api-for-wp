@@ -93,6 +93,8 @@ class Constants {
 	public const INVALID_API_NAMESPACE       = 'Invalid namespace. It should be of maximum length 15 and of the form [A-Z, a-z]/v[0-9] (eg. mo/v1).';
 	public const INVALID_API_METHOD          = 'Invalid method. Only GET, POST, PUT and DELETE are supported.';
 	public const API_NOT_FOUND               = 'The requested API does not exist. Please select an API from the list of configured APIs.';
+	public const SQL_QUERY_NOT_ALLOWED       = 'Only a single SELECT statement is allowed. UNION, stacked statements, writes, and delay or database introspection functions are not permitted. Use {{param}} for request values.';
+	public const QUERY_EXECUTION_FAILED      = 'Query execution failed.';
 
 	// HTTP method constants.
 	public const HTTP_GET    = 'get';

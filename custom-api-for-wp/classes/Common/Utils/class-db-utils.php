@@ -104,6 +104,7 @@ class DB_Utils {
 			$is_used_by = maybe_serialize( $is_used_by );
 
 			$configuration = $table_configuration['configuration'];
+			$configuration = Credential_Encryption::encrypt_authorization_fields( $configuration );
 			$configuration = maybe_serialize( $configuration );
 
 			$response = $wpdb->query( $wpdb->prepare( "INSERT INTO `%1smo_external_api_config` ( `connection_name`, `type`, `api_type`, `method`, `configuration`, `chained_connections`, `is_used_by` ) VALUES ( '%1s', '%1s', '%1s', '%1s', '%1s', '%1s', '%1s' ) ON DUPLICATE KEY UPDATE `api_type` = VALUES(`api_type`), `configuration` = VALUES(`configuration`), `chained_connections` = VALUES(`chained_connections`), `is_used_by` = VALUES(`is_used_by`)", $wpdb->prefix, $connection_name, $type, $api_type, $method, $configuration, $chained_connections, $is_used_by ) ); // phpcs:ignore WordPress.DB.PreparedSQLPlaceholders.UnquotedComplexPlaceholder, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.DirectQuery
@@ -237,6 +238,9 @@ class DB_Utils {
 				foreach ( $row as $column_name => $column_value ) {
 					$column_value                     = maybe_unserialize( $column_value );
 					$unserialized_row[ $column_name ] = $column_value;
+				}
+				if ( Constants::EXTERNAL_ENDPOINT === $configuration_type && isset( $unserialized_row['configuration'] ) ) {
+					$unserialized_row['configuration'] = Credential_Encryption::decrypt_authorization_fields( $unserialized_row['configuration'] );
 				}
 				$configurations[ $index ] = $unserialized_row;
 			}

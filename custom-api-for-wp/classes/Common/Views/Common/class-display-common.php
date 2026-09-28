@@ -119,7 +119,7 @@ class Display_Common {
 		if ( $status ) {
 			?>
 			<div id="mo-caw-callout" class="callout callout-<?php echo esc_attr( $status ); ?>">
-			<?php echo $message; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The message can contain html tags at times. ?>
+			<?php echo wp_kses_post( $message ); ?>
 			</div>
 			<?php
 		}

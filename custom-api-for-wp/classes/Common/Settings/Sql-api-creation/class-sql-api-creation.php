@@ -12,6 +12,7 @@ namespace MO_CAW\Common\Settings;
 
 use MO_CAW\Common\Constants;
 use MO_CAW\Common\DB_Utils;
+use MO_CAW\Common\SQL_Query_Validator;
 use MO_CAW\Common\Utils;
 
 /**
@@ -102,9 +103,11 @@ class SQL_API_Creation {
 			session_destroy();
 		}
 
-		$configuration                = $this->sql_endpoint_config['configuration'] ?? array();
-		$configuration['table']       = isset( $post['mo-caw-custom-sql-api-table'] ) ? sanitize_text_field( wp_unslash( $post['mo-caw-custom-sql-api-table'] ) ) : '';
-		$configuration['sql_queries'] = isset( $configuration['sql_queries'] ) ? array_map( 'wp_unslash', ( $configuration['sql_queries'] ) ) : ( isset( $post['mo-caw-custom-sql-api-query'] ) ? (array) array_map( 'wp_unslash', ( $post['mo-caw-custom-sql-api-query'] ) )[0] : array() );
+		$configuration          = $this->sql_endpoint_config['configuration'] ?? array();
+		$configuration['table'] = isset( $post['mo-caw-custom-sql-api-table'] ) ? sanitize_text_field( wp_unslash( $post['mo-caw-custom-sql-api-table'] ) ) : '';
+
+		$raw_queries                  = $post['mo-caw-custom-sql-api-query'] ?? ( $configuration['sql_queries'] ?? array() );
+		$configuration['sql_queries'] = SQL_Query_Validator::sanitize_queries( $raw_queries );
 
 		$response                          = $configuration['response'] ?? array();
 		$response['response_type']         = isset( $response['response_type'] ) ? sanitize_text_field( wp_unslash( $response['response_type'] ) ) : Constants::DEFAULT;
@@ -120,6 +123,12 @@ class SQL_API_Creation {
 	 * @return boolean
 	 */
 	protected function save_to_database() {
+		$sql_queries = $this->sql_endpoint_config['configuration']['sql_queries'] ?? array();
+		if ( ! SQL_Query_Validator::validate_queries( $sql_queries ) ) {
+			$this->save_in_session( Constants::SQL_QUERY_NOT_ALLOWED, Constants::MESSAGE_STATUS_DANGER );
+			return false;
+		}
+
 		if ( DB_Utils::update_configuration( $this->sql_endpoint_config ) ) {
 			DB_Utils::update_option( 'mo_caw_message', Constants::SAVE_SUCCESS );
 			DB_Utils::update_option( 'mo_caw_message_status', Constants::MESSAGE_STATUS_SUCCESS );
@@ -188,9 +197,9 @@ class SQL_API_Creation {
 	 * @param string $warning_message The warning message to display.
 	 * @return void
 	 */
-	private function save_in_session( $warning_message ) {
+	private function save_in_session( $warning_message, $message_status = Constants::MESSAGE_STATUS_WARNING ) {
 		DB_Utils::update_option( 'mo_caw_message', $warning_message );
-		DB_Utils::update_option( 'mo_caw_message_status', Constants::MESSAGE_STATUS_WARNING );
+		DB_Utils::update_option( 'mo_caw_message_status', $message_status );
 
 		$_SESSION['MO_CAW_SQL_API_Creation_Form_Data'] = $this->sql_endpoint_config;
 
