@@ -98,9 +98,8 @@ class SQL_API_Creation {
 
 		if ( ! empty( $gui_endpoint_config ) ) {
 			$this->save_in_session( Constants::GUI_ENDPOINT_ALREADY_EXISTS );
-		} elseif ( isset( $_SESSION['MO_CAW_SQL_API_Creation_Form_Data'] ) ) {
-			unset( $_SESSION['MO_CAW_SQL_API_Creation_Form_Data'] );
-			session_destroy();
+		} else {
+			Utils::clear_form_data();
 		}
 
 		$configuration          = $this->sql_endpoint_config['configuration'] ?? array();
@@ -201,7 +200,7 @@ class SQL_API_Creation {
 		DB_Utils::update_option( 'mo_caw_message', $warning_message );
 		DB_Utils::update_option( 'mo_caw_message_status', $message_status );
 
-		$_SESSION['MO_CAW_SQL_API_Creation_Form_Data'] = $this->sql_endpoint_config;
+		Utils::set_form_data( 'MO_CAW_SQL_API_Creation_Form_Data', $this->sql_endpoint_config );
 
 		$referer = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
 		wp_safe_redirect( $referer );

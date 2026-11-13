@@ -123,10 +123,7 @@ class API_Creation {
 				$this->save_in_session( Constants::NO_NUMERIC_PARAMETER_NAME );
 			}
 		}
-		if ( isset( $_SESSION['MO_CAW_API_Creation_Form_Data'] ) ) {
-			unset( $_SESSION['MO_CAW_API_Creation_Form_Data'] );
-			session_destroy();
-		}
+		Utils::clear_form_data();
 
 		if ( DB_Utils::update_configuration( $this->gui_endpoint_config ) ) {
 			DB_Utils::update_option( 'mo_caw_message', Constants::SAVE_SUCCESS );
@@ -199,7 +196,7 @@ class API_Creation {
 		DB_Utils::update_option( 'mo_caw_message', $warning_message );
 		DB_Utils::update_option( 'mo_caw_message_status', Constants::MESSAGE_STATUS_WARNING );
 
-		$_SESSION['MO_CAW_API_Creation_Form_Data'] = $this->gui_endpoint_config;
+		Utils::set_form_data( 'MO_CAW_API_Creation_Form_Data', $this->gui_endpoint_config );
 		$row_filter = array(
 			'connection_name' => $this->gui_endpoint_config['connection_name'],
 			'type'            => Constants::GUI_ENDPOINT,
@@ -209,7 +206,7 @@ class API_Creation {
 		$referer = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
 		if ( DB_Utils::get_configuration( $row_filter ) ) {
 			wp_safe_redirect( 'admin.php?page=custom_api_wp_settings&tab=custom-api&action=edit&api-name=' . $this->gui_endpoint_config['connection_name'] . '&method=' . $this->gui_endpoint_config['method'] . '&namespace=' . $this->gui_endpoint_config['namespace'] . '&_wpnonce=' . wp_create_nonce( 'MO_CAW_API_Creation_Edit_Nonce' ), 302 );
-			unset( $_SESSION['MO_CAW_API_Creation_Form_Data'] );
+			Utils::delete_form_data( 'MO_CAW_API_Creation_Form_Data' );
 			exit();
 		} else {
 			wp_safe_redirect( $referer );

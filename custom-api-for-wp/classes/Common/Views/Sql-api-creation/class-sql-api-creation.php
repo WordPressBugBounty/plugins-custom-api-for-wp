@@ -87,7 +87,7 @@ class SQL_API_Creation {
 	 */
 	public function __construct( $action ) {
 		if ( isset( $_GET['_wpnonce'] ) && check_admin_referer( 'MO_CAW_SQL_API_Creation_' . ucfirst( $action ) . '_Nonce', '_wpnonce' ) ) {
-			$session_form_data = isset( $_SESSION['MO_CAW_SQL_API_Creation_Form_Data'] ) ? wp_unslash( $_SESSION['MO_CAW_SQL_API_Creation_Form_Data'] ) : array(); //phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Sanitization is done in sanitize_nested_array() function.
+			$session_form_data = Utils::get_form_data( 'MO_CAW_SQL_API_Creation_Form_Data' );
 			Utils::sanitize_nested_array( $session_form_data );
 			$this->sql_endpoint_config = ! empty( $session_form_data ) ? $session_form_data : $this->sql_endpoint_config;
 

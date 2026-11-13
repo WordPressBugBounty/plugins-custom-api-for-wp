@@ -18,10 +18,6 @@ add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\\plugin_settings_style' )
 add_action( Constants::ADMIN_INIT_HOOK, __NAMESPACE__ . '\\admin_init_functionalities' );
 add_action( Constants::ADMIN_HEAD_HOOK, __NAMESPACE__ . '\\admin_head_functionalities' );
 
-if ( ! isset( $_SESSION ) ) {
-	session_start();
-}
-
 /**
  * All functionalities to be called/executed on admin_init(wp-admin).
  *

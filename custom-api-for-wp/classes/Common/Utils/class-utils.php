@@ -436,4 +436,59 @@ class Utils {
 
 		return $body;
 	}
+
+	/**
+	 * Store unsaved API form data for the current user.
+	 *
+	 * Kept in a short-lived transient so a failed save can refill the form after
+	 * redirect without leaving a PHP session open for the whole request.
+	 *
+	 * @param string $key   Form data key.
+	 * @param mixed  $value Form data to store.
+	 * @return void
+	 */
+	public static function set_form_data( $key, $value ) {
+		set_transient( self::get_form_data_transient_key( $key ), $value, 30 * MINUTE_IN_SECONDS );
+	}
+
+	/**
+	 * Retrieve unsaved API form data for the current user.
+	 *
+	 * @param string $key Form data key.
+	 * @return array
+	 */
+	public static function get_form_data( $key ) {
+		$data = get_transient( self::get_form_data_transient_key( $key ) );
+		return is_array( $data ) ? $data : array();
+	}
+
+	/**
+	 * Delete unsaved API form data for the current user.
+	 *
+	 * @param string $key Form data key.
+	 * @return void
+	 */
+	public static function delete_form_data( $key ) {
+		delete_transient( self::get_form_data_transient_key( $key ) );
+	}
+
+	/**
+	 * Delete every unsaved API form payload for the current user.
+	 *
+	 * @return void
+	 */
+	public static function clear_form_data() {
+		self::delete_form_data( 'MO_CAW_API_Creation_Form_Data' );
+		self::delete_form_data( 'MO_CAW_SQL_API_Creation_Form_Data' );
+	}
+
+	/**
+	 * Build a per-user transient key for unsaved form data.
+	 *
+	 * @param string $key Form data key.
+	 * @return string
+	 */
+	private static function get_form_data_transient_key( $key ) {
+		return 'mo_caw_fd_' . get_current_user_id() . '_' . md5( (string) $key );
+	}
 }
